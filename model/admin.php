@@ -21,8 +21,4 @@ public function createCategory($categoryName){
     }
 }
 }
-
-
-
-
 ?>

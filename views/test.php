@@ -1,6 +1,8 @@
 <?php
 // Include database connection
 require_once '../model/db_connect.php';
+require_once '../model/admin.php';
+
 session_start();
 
 $conn = (new DATABASE())->getConnection();
@@ -28,12 +30,9 @@ if ($article_stmt && $article_stmt->rowCount() > 0) {
 
 if (isset($_POST['createCategory'])) {
     $categoryName = $_POST['categoryName'];
-    $stmt = $conn->prepare("INSERT INTO catagugry (name) VALUES (?)");
-    if ($stmt->execute([$categoryName])) {
-        $message = 'Category added successfully!';
-    } else {
-        $message = 'Error occurred while adding the category!';
-    }
+
+    $A = new Admin($conn);
+    $create = $A ->createCategory($categoryName);
 }
 
 if (isset($_POST['modifyCategory'])) {
@@ -158,6 +157,7 @@ if (isset($_POST['rejectArticle'])) {
                                         <?php foreach ($articles_by_category[$category['id']] as $article): ?>
                                             <li class="flex justify-between">
                                                 <span><?= htmlspecialchars($article['title']) ?></span>
+                                                <span class="text-xs text-gray-500">ID : <?= htmlspecialchars($article['id']) ?></span>
                                                 <span class="text-xs text-gray-500"><?= htmlspecialchars($article['statu']) ?></span>
                                             </li>
                                         <?php endforeach; ?>
