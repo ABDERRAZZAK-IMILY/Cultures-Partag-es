@@ -15,10 +15,26 @@ if (isset($_POST['submit'])) {
         $visiteur = new Visteur($conn);
 
         if ($visiteur->register($firstName, $lastName, $email, $password, $role)) {
-            echo "<script>alert('Registration successful!');</script>";
-        } else {
-            echo "<script>alert('Registration failed, try again.');</script>";
-        }
+            echo "<script>
+            window.onload = function() {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'you are regestered.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            }
+          </script>";        } else {
+            echo "<script>
+            window.onload = function() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'failed to regertred.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+          </script>";        }
     }
     
 ?>
@@ -29,6 +45,9 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Signup Page</title>
+    <script src="sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -85,4 +104,5 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>
