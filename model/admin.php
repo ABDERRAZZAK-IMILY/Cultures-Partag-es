@@ -21,30 +21,56 @@ public function createCategory($categoryName){
     }
 }
 
-public function modifyCategory(){
+public function modifyCategory($newCategoryName , $categoryId){
+    $conn = (new DATABASE())->getConnection();
 
-
+    $stmt = $conn->prepare("UPDATE catagugry SET name = ? WHERE id = ?");
+    if ($stmt->execute([$newCategoryName, $categoryId])) {
+        $message = 'Category updated successfully!';
+    } else {
+        $message = 'Error occurred while updating the category!';
+    }
 
 }
 
- public function removeCategory(){
+ public function removeCategory($categoryId){
+    $conn = (new DATABASE())->getConnection();
+
+    $stmt = $conn->prepare("DELETE FROM catagugry WHERE id = ?");
+    if ($stmt->execute([$categoryId])) {
+        $message = 'Category removed successfully!';
+    } else {
+        $message = 'Error occurred while removing the category!';
+    }
+
 
 
  }
 
- public function acceptArticle(){
+ public function acceptArticle($articleId){
+    $conn = (new DATABASE())->getConnection();
 
-
+    $stmt = $conn->prepare("UPDATE article SET statu = 'accepted' WHERE id = ?");
+    if ($stmt->execute([$articleId])) {
+        $message = 'Article accepted!';
+    } else {
+        $message = 'Error occurred while accepting the article!';
+    }
 
  }
 
 
- public function rejectArticle(){
+ public function rejectArticle($articleId){
+    $conn = (new DATABASE())->getConnection();
+
+    $stmt = $conn->prepare("UPDATE article SET statu = 'rejected' WHERE id = ?");
+    if ($stmt->execute([$articleId])) {
+        $message = 'Article rejected!';
+    } else {
+        $message = 'Error occurred while rejecting the article!';
+    }
 
 
-
-
-    
  }
 
 }
