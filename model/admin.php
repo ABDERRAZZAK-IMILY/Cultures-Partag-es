@@ -20,5 +20,32 @@ public function createCategory($categoryName){
         echo 'error occurred while adding the categury!';
     }
 }
+
+public function modifyCategory(){
+
+
+
+}
+
+ public function removeCategory(){
+
+
+ }
+
+ public function acceptArticle(){
+
+
+
+ }
+
+
+ public function rejectArticle(){
+
+
+
+
+    
+ }
+
 }
 ?>
