@@ -46,7 +46,7 @@ if ($stmt && $stmt->rowCount() > 0) {
                         <h3 class="flex-1 py-2 text-lg font-semibold leading-snug"><?= $article['description'] ?></h3>
                         <div class="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-600">
                             <span><?= date("F j, Y", strtotime($article['date_creation'])) ?></span>
-                            <span><?= rand(100, 5000) ?> views</span>
+                            <span><?= rand(100, 100000) ?> views</span>
                         </div>
                     </div>
                 </article>

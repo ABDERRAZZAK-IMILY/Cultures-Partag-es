@@ -33,8 +33,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     if (isset($_POST['modifyArticle'])) {
         $articleId = $_POST['articleId'];
         $newCategoryId = $_POST['cataguryname'];
-        $newTitle = $_POST['newTitle'];
-        $newContent = $_POST['newContent'];
+        $newTitle = $_POST['newtitle'];
+        $newContent = $_POST['newcontent'];
 
         $stmt = $conn->prepare("UPDATE article SET title = ?, catagugry_id = ?, description = ? WHERE id = ?");
         if ($stmt->execute([$newTitle, $newCategoryId, $newContent, $articleId])) {
@@ -56,7 +56,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     }
 
     $articles = [];
-    $query = "SELECT id, title, description, date_creation FROM article WHERE statu = 'accepted'";
+    $query = "SELECT id, title, description, date_creation FROM article";
     $stmt = $conn->query($query);
 
     if ($stmt && $stmt->rowCount() > 0) {
@@ -132,8 +132,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                 <?php foreach ($articles as $article): ?>
                 <article class="relative bg-white shadow-md rounded-md">
                     <div>
-                        <img src="https://images.unsplash.com/photo-1579541671172-43429ce17aca?q=80&w=2065&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            class="rounded-t-md" alt="Couverture de l'Article">
+                        <img class="object-cover w-full h-52 dark:bg-gray-500" src="<?= $article['image'] ?>">
                     </div>
                     <div class="p-4">
                         <p class="text-gray-800 font-medium text-sm"><?= $article['date_creation'] ?> •</p>
@@ -142,17 +141,49 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                             <p class="text-gray-700 font-medium text-md"><?= nl2br(htmlspecialchars($article['description'])) ?></p>
                         </div>
                         <div class="flex justify-end items-center gap-5 mt-5">
-                            <form action="" method="POST" class="inline-block">
-                                <input type="hidden" name="articleId" value="<?= $article['id'] ?>">
-                                <button type="submit" name="modifyArticleBtn" class="py-2 px-5 rounded-sm text-white bg-blue-500 text-sm duration-500 hover:bg-blue-700">Modifier</button>
-                            </form>
+                        <button  id="editButton" class="py-2 px-5 rounded-sm text-white bg-blue-500 text-sm duration-500 hover:bg-blue-700">Modifier</button>
+                    
+
+                        
+
+                        <div class="bg-gray-800 p-4 rounded bg-opacity-50 absolute top-0 left-0 w-50 z-10" id="editForm" style="display: none;">
+        <h1 class="text-3xl font-bold text-center mb-8 text-white">EDIT PROFILE</h1>
+
+          <form id="player-form" class="space-y-4">
+          <div class="space-y-4">
+                        <div>
+                            <label for="articleTitle" class="block text-gray-700">Article Title</label>
+                            <input type="text" id="articleTitle" name="newtitle" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="catagury" class="block text-gray-700">Category</label>
+                            <select id="catagury" name="cataguryname" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="articleContent" class="block text-gray-700">Article Content</label>
+                            <textarea id="articleContent" name="newcontent" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        </div>
+            <div>
+              <label class="block mb-2 text-white">Image</label>
+              <input type="text" name="image" id="image-src"  class="w-full  rounded-md text-white outline-none focus:ring-2 focus:ring-blue-100">
+            </div>
+            <input type="hidden" name="articleId" value="<?= $article['id'] ?>">
+            <button type="submit" name="modifyArticle" class="py-2 px-5 rounded-sm text-white bg-blue-500 text-sm duration-500 hover:bg-blue-700">Modifier</button>
+            </form>
+              </div>
+                        </div>                  
+
                             <form action="" method="POST" class="inline-block">
                                 <input type="hidden" name="removeArticleId" value="<?= $article['id'] ?>">
                                 <button type="submit" name="removeArticle" class="py-2 px-5 rounded-sm text-white bg-red-500 text-sm duration-500 hover:bg-red-700">Supprimer</button>
                             </form>
                         </div>
                     </div>
-                    <p class="absolute top-2 right-2 bg-white bg-opacity-85 py-1 px-3 rounded-md text-xs">Peinture</p>
+                    <p class="absolute top-2 right-2 bg-white bg-opacity-85 py-1 px-3 rounded-md text-xs">CATAGORY</p>
                 </article>
                 <?php endforeach; ?>
             </div>
@@ -165,6 +196,10 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                         <div>
                             <label for="articleTitle" class="block text-gray-700">Article Title</label>
                             <input type="text" id="articleTitle" name="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="articleTitle" class="block text-gray-700">Article image url</label>
+                            <input type="text" id="articleTitle" name="image" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         </div>
                         <div>
                             <label for="catagury" class="block text-gray-700">Category</label>
@@ -188,4 +223,14 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     </main>
 </body>
 
+<script>
+    document.getElementById('editButton').onclick = function() {
+        var editForm = document.getElementById('editForm');
+        if (editForm.style.display === "none") {
+            editForm.style.display = "block";
+        } else {
+            editForm.style.display = "none";
+        }
+    };
+</script>  
 </html>

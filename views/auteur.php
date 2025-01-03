@@ -1,75 +1,78 @@
 <?php
-
 require_once '../model/db_connect.php';
 session_start();
 
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
+    $conn = (new DATABASE())->getConnection();
 
+    $categories = [];
+    $categoryQuery = "SELECT id, name FROM catagugry";
+    $stmt = $conn->query($categoryQuery);
 
-
-$conn = (new DATABASE())->getConnection();
-
-$categories = [];
-$aq = "SELECT id, name FROM catagugry";
-$stmt = $conn->query($aq);
-
-if ($stmt && $stmt->rowCount() > 0) {
-    while ($ro = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $categories[] = $ro;
+    if ($stmt && $stmt->rowCount() > 0) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $categories[] = $row;
+        }
     }
-}
 
-if (isset($_POST['createArticle'])) {
+    if (isset($_POST['createArticle'])) {
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $categoryId = $_POST['cataguryname'];
+        $date_res = date('Y-m-d');
+        $image = $_POST['image'];
 
-    
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $categoryId = $_POST['cataguryname'];
-    $date_res = date('Y-m-d');
+        $stmt2 = $conn->prepare("INSERT INTO article (user_id, catagugry_id, date_creation, description, image, title) VALUES (?, ?, ?, ?, ?, ?)");
 
-    $image = $_POST['image'];
-    $stmt2 = $conn->prepare("INSERT INTO article (user_id, catagugry_id, date_creation, description, image , title) VALUES (?, ?, ?, ?, ? ,?)");
-    
-    if ($stmt2->execute([$_SESSION['user_id'], $categoryId, $date_res, $content, $image , $title])) {
-        echo 'Article created successfully!';
+        if ($stmt2->execute([$_SESSION['user_id'], $categoryId, $date_res, $content , $image , $title])) {
+            $message = 'Article created successfully!';
+        } else {
+            $message = 'Error: ' . implode(', ', $stmt2->errorInfo());
+        }
+    }
+
+    if (isset($_POST['modifyArticle'])) {
+        $articleId = $_POST['articleId'];
+        $newCategoryId = $_POST['cataguryname'];
+        $newTitle = $_POST['newtitle'];
+        $newContent = $_POST['newcontent'];
+
+        $stmt = $conn->prepare("UPDATE article SET title = ?, catagugry_id = ?, description = ? WHERE id = ?");
+        if ($stmt->execute([$newTitle, $newCategoryId, $newContent, $articleId])) {
+            $message = 'Article updated successfully!';
+        } else {
+            $message = 'Error: ' . implode(', ', $stmt->errorInfo());
+        }
+    }
+
+    if (isset($_POST['removeArticle'])) {
+        $articleId = $_POST['removeArticleId'];
+
+        $stmt = $conn->prepare("DELETE FROM article WHERE id = ?");
+        if ($stmt->execute([$articleId])) {
+            $message = 'Article removed successfully!';
+        } else {
+            $message = 'Error: ' . implode(', ', $stmt->errorInfo());
+        }
+    }
+
+    $articles = [];
+    $query = "SELECT article.id, article.title, article.description, article.date_creation, article.image, article.catagugry_id, catagugry.name AS category_name
+              FROM article
+              LEFT JOIN catagugry ON article.catagugry_id = catagugry.id";
+    $stmt = $conn->query($query);
+
+    if ($stmt && $stmt->rowCount() > 0) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $articles[] = $row;
+        }
     } else {
-        echo 'Error: ' . implode(', ', $stmt2->errorInfo());
+        $message = "No accepted articles found.";
     }
-}
-
-if (isset($_POST['modifyArticle'])) {
-    $articleId = $_POST['articleId'];
-    $newCategoryId = $_POST['cataguryname'];
-    $newTitle = $_POST['newTitle'];
-    $newContent = $_POST['newContent'];
-
-    $stmt = $conn->prepare("UPDATE article SET title = ?, catagugry_id = ?, description = ? WHERE id = ?");
-    if ($stmt->execute([$newTitle, $newCategoryId, $newContent, $articleId])) {
-        echo 'Article updated successfully!';
-    } else {
-        echo 'Error: ' . implode(', ', $stmt->errorInfo());
-    }
-}
-
-if (isset($_POST['removeArticle'])) {
-    $articleId = $_POST['removeArticleId'];
-
-    $stmt = $conn->prepare("DELETE FROM article WHERE id = ?");
-    if ($stmt->execute([$articleId])) {
-        echo 'Article removed successfully!';
-    } else {
-        echo 'Error: ' . implode(', ', $stmt->errorInfo());
-    }
-}
-
-}else {
-
-    die("error");
+} else {
+    die("Access denied. You are not authorized.");
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -77,29 +80,123 @@ if (isset($_POST['removeArticle'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auteur Dashboard</title>
+    <title>AUTEUR DASHBOARD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-gray-100">
+    <main class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gradient-to-b from-red-800 to-green-900 text-white">
+            <div class="p-6">
+                <div class="flex items-center space-x-3">
+                    <h1 class="text-2xl font-bold">AUTEUR DASHBOARD</h1>
+                </div>
+            </div>
 
-    <div class="min-h-screen flex flex-col items-center justify-center py-12 px-6 sm:px-10">
+            <nav class="mt-6">
+                <div class="px-6 py-3">
+                    <p class="text-xs uppercase text-purple-300">Menu Principal</p>
+                </div>
+                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                    <i class="fas fa-pencil-alt mr-3"></i>
+                    Mes Articles
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                    <i class="fas fa-plus-circle mr-3"></i>
+                    Nouvel Article
+                </a>
+                <a href="login.html"
+                    class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    Déconnexion
+                </a>
+            </nav>
+        </aside>
 
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-semibold text-gray-800">Auteur Dashboard</h1>
-            <p class="text-xl text-gray-600">Manage your articles</p>
-        </header>
+        <!-- Main Content -->
+        <section class="flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Top Navigation -->
+            <nav class="bg-white shadow-md">
+                <div class="mx-auto px-8 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
+                            <p class="text-sm text-gray-600">Bienvenue,</p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-        <div class="w-full max-w-3xl bg-white shadow-md rounded-lg p-8">
+            <!-- Dashboard -->
+            <div class="p-10 flex items-center gap-8 flex-wrap lg:grid lg:grid-cols-2 bg-gray-200">
+                <?php foreach ($articles as $article): ?>
+                <article class="relative bg-white shadow-md rounded-md">
+                    <div>
+                        <img class="object-cover w-full h-52 dark:bg-gray-500" src="<?= htmlspecialchars($article['image']) ?>" alt="Article Image">
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-800 font-medium text-sm"><?= $article['date_creation'] ?> •</p>
+                        <div class="pt-5">
+                            <a href="#"><h1 class="text-gray-900 font-semibold text-xl mb-3"><?= htmlspecialchars($article['title']) ?></h1></a>
+                            <p class="text-gray-700 font-medium text-md"><?= nl2br(htmlspecialchars($article['description'])) ?></p>
+                        </div>
+                        <div class="flex justify-end items-center gap-5 mt-5">
+                            <button class="editButton py-2 px-5 rounded-sm text-white bg-blue-500 text-sm duration-500 hover:bg-blue-700">Modifier</button>
 
-            <!-- Create New Article Form -->
-            <div class="mb-6">
+                            <div class="bg-gray-800 p-4 rounded bg-opacity-50 absolute top-0 left-0 w-50 z-10" id="editForm_<?= $article['id'] ?>" style="display: none;">
+                                <h1 class="text-3xl font-bold text-center mb-8 text-white">EDIT article</h1>
+                                <form action="" method="POST" class="space-y-4">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="articleTitle" class="block text-gray-700">Article Title</label>
+                                            <input type="text" id="articleTitle" name="newtitle" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?= htmlspecialchars($article['title']) ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="catagury" class="block text-gray-700">Category</label>
+                                            <select id="catagury" name="cataguryname" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                                <?php foreach ($categories as $category): ?>
+                                                    <option value="<?= $category['id'] ?>" <?= $category['id'] == $article['catagugry_id'] ? 'selected' : '' ?>><?= $category['name'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="articleContent" class="block text-gray-700">Article Content</label>
+                                            <textarea id="articleContent" name="newcontent" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required><?= htmlspecialchars($article['description']) ?></textarea>
+                                        </div>
+                                        <input type="hidden" name="articleId" value="<?= $article['id'] ?>">
+                                        <button type="submit" name="modifyArticle" class="py-2 px-5 rounded-sm text-white bg-blue-500 text-sm duration-500 hover:bg-blue-700">Modifier</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <form action="" method="POST" class="inline-block">
+                                <input type="hidden" name="removeArticleId" value="<?= $article['id'] ?>">
+                                <button type="submit" name="removeArticle" class="py-2 px-5 rounded-sm text-white bg-red-500 text-sm duration-500 hover:bg-red-700">Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="absolute top-2 right-2 bg-white bg-opacity-85 py-1 px-3 rounded-md text-xs"><?= htmlspecialchars($article['category_name']) ?></p>
+                </article>
+                <?php endforeach; ?>
+            </div>
+
+
+
+               <!-- Create New Article Form -->
+               <div class="p-10 mt-8">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Create New Article</h2>
                 <form action="" method="POST">
                     <div class="space-y-4">
                         <div>
                             <label for="articleTitle" class="block text-gray-700">Article Title</label>
                             <input type="text" id="articleTitle" name="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="articleTitle" class="block text-gray-700">Article image url</label>
+                            <input type="text" id="articleTitle" name="image" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         </div>
                         <div>
                             <label for="catagury" class="block text-gray-700">Category</label>
@@ -114,66 +211,23 @@ if (isset($_POST['removeArticle'])) {
                             <textarea id="articleContent" name="content" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
                         </div>
                         <div>
-                            <label for="image" class="block text-gray-700">image</label>
-                            <input type="file" id="image" name="image" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
                             <button type="submit" name="createArticle" class="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">Create Article</button>
                         </div>
                     </div>
                 </form>
             </div>
-
-            <!-- Modify Article Form -->
-            <div class="mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Modify Article</h2>
-                <form action="" method="POST">
-                    <div class="space-y-4">
-                        <div>
-                            <label for="articleId" class="block text-gray-700">Article ID</label>
-                            <input type="text" id="articleId" name="articleId" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <label for="catagury" class="block text-gray-700">New Category</label>
-                            <select id="catagury" name="cataguryname" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                <?php foreach ($categories as $category): ?>
-                                    <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="newTitle" class="block text-gray-700">New Title</label>
-                            <input type="text" id="newTitle" name="newTitle" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <label for="newContent" class="block text-gray-700">New Content</label>
-                            <textarea id="newContent" name="newContent" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-                        </div>
-                        <div>
-                            <button type="submit" name="modifyArticle" class="w-full py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none">Modify Article</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Remove Article Form -->
-            <div class="mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Remove Article</h2>
-                <form action="" method="POST">
-                    <div class="space-y-4">
-                        <div>
-                            <label for="removeArticleId" class="block text-gray-700">Article ID</label>
-                            <input type="text" id="removeArticleId" name="removeArticleId" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <button type="submit" name="removeArticle" class="w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">Remove Article</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
+
+<script>
+    document.querySelectorAll('.editButton').forEach(function(button) {
+        button.onclick = function() {
+            var editFormId = 'editForm_' + this.closest('article').querySelector('input[name="articleId"]').value;
+            var editForm = document.getElementById(editFormId);
+            editForm.style.display = (editForm.style.display === "none") ? "block" : "none";
+        };
+    });
+</script>
 
 </html>
