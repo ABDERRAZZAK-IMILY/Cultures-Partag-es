@@ -20,13 +20,14 @@ if ($stmt && $stmt->rowCount() > 0) {
 }
 
 if (isset($_POST['createArticle'])) {
+
+    
     $title = $_POST['title'];
     $content = $_POST['content'];
     $categoryId = $_POST['cataguryname'];
     $date_res = date('Y-m-d');
 
     $image = $_POST['image'];
-
     $stmt2 = $conn->prepare("INSERT INTO article (user_id, catagugry_id, date_creation, description, image , title) VALUES (?, ?, ?, ?, ? ,?)");
     
     if ($stmt2->execute([$_SESSION['user_id'], $categoryId, $date_res, $content, $image , $title])) {

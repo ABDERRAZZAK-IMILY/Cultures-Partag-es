@@ -5,7 +5,6 @@ session_start();
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     $conn = (new DATABASE())->getConnection();
 
-    // Fetch categories for the select dropdown
     $categories = [];
     $categoryQuery = "SELECT id, name FROM catagugry";
     $stmt = $conn->query($categoryQuery);
@@ -16,7 +15,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         }
     }
 
-    // Handle creating a new article
     if (isset($_POST['createArticle'])) {
         $title = $_POST['title'];
         $content = $_POST['content'];
@@ -32,7 +30,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         }
     }
 
-    // Handle modifying an article
     if (isset($_POST['modifyArticle'])) {
         $articleId = $_POST['articleId'];
         $newCategoryId = $_POST['cataguryname'];
@@ -47,7 +44,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         }
     }
 
-    // Handle deleting an article
     if (isset($_POST['removeArticle'])) {
         $articleId = $_POST['removeArticleId'];
 
@@ -59,7 +55,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         }
     }
 
-    // Fetch accepted articles for display
     $articles = [];
     $query = "SELECT id, title, description, date_creation FROM article WHERE statu = 'accepted'";
     $stmt = $conn->query($query);

@@ -15,10 +15,27 @@ public function createCategory($categoryName){
 
     $stmt = $conn->prepare("INSERT INTO catagugry (name) VALUES (?)");
     if ($stmt->execute([$categoryName])) {
-        echo 'categury added successfully!';
-    } else {
-        echo 'error occurred while adding the categury!';
-    }
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Success!',
+                text: 'catagory added!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>"; 
+        } else {
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'failed to added',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>";    }
 }
 
 public function modifyCategory($newCategoryName , $categoryId){
@@ -28,8 +45,16 @@ public function modifyCategory($newCategoryName , $categoryId){
     if ($stmt->execute([$newCategoryName, $categoryId])) {
         $message = 'Category updated successfully!';
     } else {
-        $message = 'Error occurred while updating the category!';
-    }
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'failed to updated',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>";    }
 
 }
 
@@ -38,8 +63,17 @@ public function modifyCategory($newCategoryName , $categoryId){
 
     $stmt = $conn->prepare("DELETE FROM catagugry WHERE id = ?");
     if ($stmt->execute([$categoryId])) {
-        $message = 'Category removed successfully!';
-    } else {
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Success!',
+                text: 'removed',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>"; 
+        } else {
         $message = 'Error occurred while removing the category!';
     }
 
@@ -52,9 +86,28 @@ public function modifyCategory($newCategoryName , $categoryId){
 
     $stmt = $conn->prepare("UPDATE article SET statu = 'accepted' WHERE id = ?");
     if ($stmt->execute([$articleId])) {
-        $message = 'Article accepted!';
+        
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Success!',
+                text: 'article accepted.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>";  
     } else {
-        $message = 'Error occurred while accepting the article!';
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'failed to accpted',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>";
     }
 
  }
@@ -65,10 +118,27 @@ public function modifyCategory($newCategoryName , $categoryId){
 
     $stmt = $conn->prepare("UPDATE article SET statu = 'rejected' WHERE id = ?");
     if ($stmt->execute([$articleId])) {
-        $message = 'Article rejected!';
-    } else {
-        $message = 'Error occurred while rejecting the article!';
-    }
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Success!',
+                text: 'article rejected',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>";    
+     } else {
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'failed to accpted',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>";    }
 
 
  }

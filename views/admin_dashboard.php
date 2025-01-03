@@ -1,9 +1,12 @@
 <?php
-// Include database connection
 require_once '../model/db_connect.php';
 require_once '../model/admin.php';
 
 session_start();
+
+
+
+
 
 $A = new Admin($conn);
 
@@ -12,7 +15,6 @@ $conn = (new DATABASE())->getConnection();
 $categories = [];
 $articles_by_category = [];
 
-// Fetch categories
 $aq = "SELECT id, name FROM catagugry";
 $stmt = $conn->query($aq);
 if ($stmt && $stmt->rowCount() > 0) {
@@ -76,6 +78,8 @@ if (isset($_POST['rejectArticle'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -94,7 +98,7 @@ if (isset($_POST['rejectArticle'])) {
                 <div class="px-6 py-3">
                     <p class="text-xs uppercase text-purple-300">Menu Principal</p>
                 </div>
-                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                <a href="../views/list_user_profile.php" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
                     <i class="fas fa-users mr-3"></i>
                     Gestion des utilisateurs
                 </a>
@@ -102,7 +106,7 @@ if (isset($_POST['rejectArticle'])) {
                     <i class="fas fa-clipboard-list mr-3"></i>
                     Gestion des catégories
                 </a>
-                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                <a href="#ArticleManagement" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
                     <i class="fas fa-newspaper mr-3"></i>
                     Gestion des articles
                 </a>
@@ -126,56 +130,58 @@ if (isset($_POST['rejectArticle'])) {
 
             <!-- Dashboard -->
             <div class="p-10 flex flex-wrap gap-8 bg-gray-200">
-                <!-- Category Management (Create, Modify, Remove) -->
+                <!-- Create Category -->
                 <div class="w-full md:w-1/3">
                     <div class="bg-white shadow-md p-6 rounded-md">
-                        <h3 class="text-xl font-semibold mb-4">Manage Categories</h3>
+                        <h3 class="text-xl font-semibold mb-4">Create Category</h3>
                         <form method="POST">
                             <label for="categoryName" class="block text-gray-700">Category Name</label>
                             <input type="text" name="categoryName" id="categoryName" class="w-full p-2 border border-gray-300 rounded-md" required>
                             <button type="submit" name="createCategory" class="mt-4 w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Category</button>
                         </form>
                     </div>
-
-
-
-
-                         <!-- Modify Category -->
-            <div class="mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Modify Category</h2>
-                <form action="#" method="POST">
-                    <div class="space-y-4">
-                        <div>
-                            <label for="categoryId" class="block text-gray-700">Category ID</label>
-                            <input type="text" id="categoryId" name="categoryId" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <label for="newCategoryName" class="block text-gray-700">New Category Name</label>
-                            <input type="text" id="newCategoryName" name="newCategoryName" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <button type="submit" name="modifyCategory" class="w-full py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none">Modify Category</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
                 </div>
 
-
-   <!-- Remove Category -->
-   <div class="mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Remove Category</h2>
-                <form action="#" method="POST">
-                    <div class="space-y-4">
-                        <div>
+                <!-- Modify Category -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white shadow-md p-6 rounded-md">
+                        <h3 class="text-xl font-semibold mb-4">Modify Category</h3>
+                        <form method="POST">
                             <label for="categoryId" class="block text-gray-700">Category ID</label>
-                            <input type="text" id="categoryId" name="categoryId" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <button type="submit" name="removeCategory" class="w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">Remove Category</button>
-                        </div>
+                            <input type="number" name="categoryId" id="categoryId" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <label for="newCategoryName" class="block text-gray-700 mt-4">New Category Name</label>
+                            <input type="text" name="newCategoryName" id="newCategoryName" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <button type="submit" name="modifyCategory" class="mt-4 w-full py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700">Modify Category</button>
+                        </form>
                     </div>
-                </form>
+                </div>
+
+                <!-- Remove Category -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white shadow-md p-6 rounded-md">
+                        <h3 class="text-xl font-semibold mb-4">Remove Category</h3>
+                        <form method="POST">
+                            <label for="categoryId" class="block text-gray-700">Category ID</label>
+                            <input type="number" name="categoryId" id="categoryId" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <button type="submit" name="removeCategory" class="mt-4 w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Remove Category</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Manage Articles -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white shadow-md p-6 rounded-md">
+                        <h3 class="text-xl font-semibold mb-4">Manage Articles</h3>
+                        <form method="POST">
+                            <label for="articleId" class="block text-gray-700">Article ID</label>
+                            <input type="number" name="articleId" id="articleId" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <div class="flex space-x-4">
+                                <button type="submit" name="acceptArticle" class="mt-4 py-2 px-5 bg-green-600 text-white rounded-md hover:bg-green-700 w-full">Accept Article</button>
+                                <button type="submit" name="rejectArticle" class="mt-4 py-2 px-5 bg-red-600 text-white rounded-md hover:bg-red-700 w-full">Reject Article</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
 
@@ -190,7 +196,7 @@ if (isset($_POST['rejectArticle'])) {
                             <div class="mb-6">
 
            <div class="overflow-x-auto p-4 bg-white rounded-lg shadow-md">
-    <table class="table-auto w-full border-collapse border border-gray-200">
+           <table class="table-auto w-full border-collapse border border-gray-200">
         <thead class="bg-orange-700 text-white">
             <tr>
                 <th class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['name']) ?></th>
@@ -236,20 +242,7 @@ if (isset($_POST['rejectArticle'])) {
     </table>
 </div>
 
-                <!-- Article Management -->
-                <div class="w-full md:w-1/3">
-                    <div class="bg-white shadow-md p-6 rounded-md">
-                        <h3 class="text-xl font-semibold mb-4">Manage Articles</h3>
-                        <form method="POST">
-                            <label for="articleId" class="block text-gray-700">Article ID</label>
-                            <input type="number" name="articleId" id="articleId" class="w-full p-2 border border-gray-300 rounded-md" required>
-                            <div class="flex space-x-4">
-                                <button type="submit" name="acceptArticle" class="mt-4 py-2 px-5 bg-green-600 text-white rounded-md hover:bg-green-700 w-full">Accept Article</button>
-                                <button type="submit" name="rejectArticle" class="mt-4 py-2 px-5 bg-red-600 text-white rounded-md hover:bg-red-700 w-full">Reject Article</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
             </div>
         </section>
     </main>
