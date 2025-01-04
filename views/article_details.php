@@ -12,7 +12,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
               FROM article a
               JOIN catagugry c ON a.catagugry_id = c.id
               JOIN users u ON a.user_id = u.id
-              WHERE a.id = :article_id AND a.status = 'accepted'"; 
+              WHERE a.id = :article_id AND a.statu = 'accepted'"; 
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
     $stmt->execute();

@@ -59,7 +59,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         $message = "no accepted articles found";
     }
 } else {
-    die("access denied");
+    die("access denied , should be sing up");
 }
 ?>
 

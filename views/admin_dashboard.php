@@ -4,12 +4,7 @@ require_once '../model/admin.php';
 
 session_start();
 
-
-
-
-
 $A = new Admin($conn);
-
 $conn = (new DATABASE())->getConnection();
 
 $categories = [];
@@ -28,47 +23,40 @@ $article_query = "SELECT id, title, catagugry_id, statu FROM article";
 $article_stmt = $conn->query($article_query);
 if ($article_stmt && $article_stmt->rowCount() > 0) {
     while ($article = $article_stmt->fetch(PDO::FETCH_ASSOC)) {
-        $articles_by_category[$article['catagugry_id']][] = $article;
+        $articles_by_category[$article['catagugry_id']][] = $article; 
     }
 }
 
 if (isset($_POST['createCategory'])) {
     $categoryName = $_POST['categoryName'];
-
     $A = new Admin($conn);
-    $create = $A ->createCategory($categoryName);
+    $create = $A->createCategory($categoryName);
 }
 
 if (isset($_POST['modifyCategory'])) {
     $categoryId = $_POST['categoryId'];
     $newCategoryName = $_POST['newCategoryName'];
-
     $A = new Admin($conn);
-
-$modify = $A ->modifyCategory($newCategoryName , $categoryId);
-   
-
+    $modify = $A->modifyCategory($newCategoryName, $categoryId);
 }
 
 if (isset($_POST['removeCategory'])) {
     $categoryId = $_POST['categoryId'];
-
     $remove = $A->removeCategory($categoryId);
- 
 }
 
 if (isset($_POST['acceptArticle'])) {
     $articleId = $_POST['articleId'];
-  
-    $accept = $A->acceptArticle($articleId);
+    if (!empty($articleId)) {
+        $accept = $A->acceptArticle($articleId);
+    }
 }
 
 if (isset($_POST['rejectArticle'])) {
     $articleId = $_POST['articleId'];
-
-   
-    $reject = $A->rejectArticle($articleId);
-
+    if (!empty($articleId)) {
+        $reject = $A->rejectArticle($articleId);
+    }
 }
 ?>
 
@@ -173,77 +161,85 @@ if (isset($_POST['rejectArticle'])) {
                     <div class="bg-white shadow-md p-6 rounded-md">
                         <h3 class="text-xl font-semibold mb-4">Manage Articles</h3>
                         <form method="POST">
-                            <label for="articleId" class="block text-gray-700">Article ID</label>
-                            <input type="number" name="articleId" id="articleId" class="w-full p-2 border border-gray-300 rounded-md" required>
-                            <div class="flex space-x-4">
-                                <button type="submit" name="acceptArticle" class="mt-4 py-2 px-5 bg-green-600 text-white rounded-md hover:bg-green-700 w-full">Accept Article</button>
-                                <button type="submit" name="rejectArticle" class="mt-4 py-2 px-5 bg-red-600 text-white rounded-md hover:bg-red-700 w-full">Reject Article</button>
+                            <label for="articleId" class="block text-gray-700">Select Article</label>
+                            <select name="articleId" id="articleId" class="w-full p-2 border border-gray-300 rounded-md" required>
+                                <option value=""> select  article</option>
+                                <?php
+                                foreach ($articles_by_category as $category_id => $articles) {
+                                    foreach ($articles as $article) {
+                                        echo '<option value="' . $article['id'] . '">' . htmlspecialchars($article['title']) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <div class="flex space-x-4 mt-4">
+                                <button type="submit" name="acceptArticle" class="py-2 px-5 bg-green-600 text-white rounded-md hover:bg-green-700 w-full">Accept Article</button>
+                                <button type="submit" name="rejectArticle" class="py-2 px-5 bg-red-600 text-white rounded-md hover:bg-red-700 w-full">Reject Article</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-
-
-
-
-                <!-- Manage Articles by Category -->
-                <div class="w-full">
-                    <div class="bg-white shadow-md p-6 rounded-md">
-                        <h3 class="text-xl font-semibold mb-4">Articles by Category</h3>
-                        <?php foreach ($categories as $category): ?>
-                            <div class="mb-6">
-
-           <div class="overflow-x-auto p-4 bg-white rounded-lg shadow-md">
-           <table class="table-auto w-full border-collapse border border-gray-200">
-        <thead class="bg-orange-700 text-white">
-            <tr>
-                <th class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['name']) ?></th>
-            </tr>
-        </thead>
-        <tbody>
-                                <ul class="list-disc pl-5">
-                                    <?php if (isset($articles_by_category[$category['id']])): ?>
-                                        <?php foreach ($articles_by_category[$category['id']] as $article): ?>
-                                            <li class="flex justify-between">
-                                                <span><?= htmlspecialchars($article['title']) ?></span>
-                                                <span class="text-xs text-gray-500">ID : <?= htmlspecialchars($article['id']) ?></span>
-                                                <span class="text-xs text-gray-500"><?= htmlspecialchars($article['statu']) ?></span>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <li>No articles in this category.</li>
-                                    <?php endif; ?>
-                                </ul>
+            <!-- Manage Articles by Category -->
+            <!-- <div class="w-full">
+                <div class="bg-white shadow-md p-6 rounded-md">
+                    <h3 class="text-xl font-semibold mb-4">Articles by Category</h3>
+                    <?php foreach ($categories as $category): ?>
+                        <div class="mb-6">
+                            <div class="overflow-x-auto p-4 bg-white rounded-lg shadow-md">
+                                <table class="table-auto w-full border-collapse border border-gray-200">
+                                    <thead class="bg-orange-700 text-white">
+                                        <tr>
+                                            <th class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['name']) ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3">
+                                                <ul class="list-disc pl-5">
+                                                    <?php if (isset($articles_by_category[$category['id']])): ?>
+                                                        <?php foreach ($articles_by_category[$category['id']] as $article): ?>
+                                                            <li class="flex justify-between">
+                                                                <span><?= htmlspecialchars($article['title']) ?></span>
+                                                                <span class="text-xs text-gray-500">ID: <?= htmlspecialchars($article['id']) ?></span>
+                                                                <span class="text-xs text-gray-500"><?= htmlspecialchars($article['statu']) ?></span>
+                                                            </li>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
+                                                        <li>no articles in this category.</li>
+                                                    <?php endif; ?>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
+            </div> -->
+
+            <!-- Categories Table -->
+            <div class="overflow-x-auto p-4 bg-white rounded-lg shadow-md">
+                <table class="table-auto w-full border-collapse border border-gray-200">
+                    <thead class="bg-orange-700 text-white">
+                        <tr>
+                            <th class="px-4 py-2 border border-gray-300">ID Catagugry</th>
+                            <th class="px-4 py-2 border border-gray-300">Catagugry Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($categories as $category): ?>
+                        <tr class="odd:bg-purple-50 even:bg-purple-100 hover:bg-purple-200">
+                            <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['id']) ?></td>
+                            <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['name']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
                 </table>
-                </div>
-
-    <div class="overflow-x-auto p-4 bg-white rounded-lg shadow-md">
-    <table class="table-auto w-full border-collapse border border-gray-200">
-        <thead class="bg-orange-700 text-white">
-            <tr>
-                <th class="px-4 py-2 border border-gray-300">ID catagory</th>
-                <th class="px-4 py-2 border border-gray-300">catagory name</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($categories as $category): ?>
-            <tr class="odd:bg-purple-50 even:bg-purple-100 hover:bg-purple-200">
-                <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['id']) ?></td>
-                <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($category['name']) ?></td>
-            </tr>
-        <?php endforeach; ?>
-           
-    </table>
-</div>
-
-
             </div>
+
         </section>
     </main>
 </body>
