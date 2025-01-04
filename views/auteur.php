@@ -1,9 +1,12 @@
 <?php
 require_once '../model/db_connect.php';
+require_once '../model/Auteur.php';
+
 session_start();
 
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     $conn = (new DATABASE())->getConnection();
+    $A = new Auteur($conn);
 
     $categories = [];
     $categoryQuery = "SELECT id, name FROM catagugry";
@@ -22,13 +25,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         $date_res = date('Y-m-d');
         $image = $_POST['image'];
 
-        $stmt2 = $conn->prepare("INSERT INTO article (user_id, catagugry_id, date_creation, description, image, title) VALUES (?, ?, ?, ?, ?, ?)");
+     $createArtile = $A->createArticle($categoryId , $date_res , $content , $image , $title);
 
-        if ($stmt2->execute([$_SESSION['user_id'], $categoryId, $date_res, $content , $image , $title])) {
-            $message = 'Article created successfully!';
-        } else {
-            $message = 'Error: ' . implode(', ', $stmt2->errorInfo());
-        }
     }
 
     if (isset($_POST['modifyArticle'])) {
@@ -37,29 +35,20 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         $newTitle = $_POST['newtitle'];
         $newContent = $_POST['newcontent'];
 
-        $stmt = $conn->prepare("UPDATE article SET title = ?, catagugry_id = ?, description = ? WHERE id = ?");
-        if ($stmt->execute([$newTitle, $newCategoryId, $newContent, $articleId])) {
-            $message = 'Article updated successfully!';
-        } else {
-            $message = 'Error: ' . implode(', ', $stmt->errorInfo());
-        }
+      $modify = $A->modifyArticle($newTitle , $newCategoryId , $newContent , $articleId);
+
     }
 
     if (isset($_POST['removeArticle'])) {
         $articleId = $_POST['removeArticleId'];
-
-        $stmt = $conn->prepare("DELETE FROM article WHERE id = ?");
-        if ($stmt->execute([$articleId])) {
-            $message = 'Article removed successfully!';
-        } else {
-            $message = 'Error: ' . implode(', ', $stmt->errorInfo());
-        }
+        $removeArticle = $A->removeAricle($articleId);
+      
     }
 
     $articles = [];
     $query = "SELECT article.id, article.title, article.description, article.date_creation, article.image, article.catagugry_id, catagugry.name AS category_name
               FROM article
-              LEFT JOIN catagugry ON article.catagugry_id = catagugry.id";
+               JOIN catagugry ON article.catagugry_id = catagugry.id";
     $stmt = $conn->query($query);
 
     if ($stmt && $stmt->rowCount() > 0) {
@@ -67,10 +56,10 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
             $articles[] = $row;
         }
     } else {
-        $message = "No accepted articles found.";
+        $message = "no accepted articles found";
     }
 } else {
-    die("Access denied. You are not authorized.");
+    die("access denied");
 }
 ?>
 
@@ -141,7 +130,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                         <p class="text-gray-800 font-medium text-sm"><?= $article['date_creation'] ?> •</p>
                         <div class="pt-5">
                             <a href="#"><h1 class="text-gray-900 font-semibold text-xl mb-3"><?= htmlspecialchars($article['title']) ?></h1></a>
-                            <p class="text-gray-700 font-medium text-md"><?= nl2br(htmlspecialchars($article['description'])) ?></p>
+                            <p class="text-gray-700 font-medium text-md"><?= htmlspecialchars($article['description']) ?></p>
                         </div>
                         <div class="flex justify-end items-center gap-5 mt-5">
                             <button class="editButton py-2 px-5 rounded-sm text-white bg-blue-500 text-sm duration-500 hover:bg-blue-700">Modifier</button>
