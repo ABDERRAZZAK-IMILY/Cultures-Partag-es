@@ -15,7 +15,7 @@ class Auteur extends Visteur {
         $stmt2 = $conn->prepare("INSERT INTO article (user_id, catagugry_id, date_creation, description, image, title) VALUES (?, ?, ?, ?, ?, ?)");
 
         if ($stmt2->execute([$_SESSION['user_id'], $categoryId, $date_res, $content , $image , $title])) {
-            $message = 'Article created successfully!';
+            $message = 'article created successfully!';
         } else {
             $message = 'Error: ' . implode(', ', $stmt2->errorInfo());
         }

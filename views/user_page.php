@@ -17,7 +17,7 @@ if ($stmt && $stmt->rowCount() > 0) {
         $articles[] = $row;
     }
 } else {
-    echo "no articles found.";
+    echo "no article found.";
 }
 ?>
 
