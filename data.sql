@@ -28,3 +28,33 @@ CREATE TABLE article (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (catagugry_id) REFERENCES catagugry(id)
 );
+
+
+
+
+
+
+
+--script
+
+
+
+SELECT c.name AS category_name, COUNT(a.id) AS total_articles
+FROM catagugry c
+LEFT JOIN article a ON c.id = a.catagugry_id
+GROUP BY c.name;
+
+
+
+SELECT u.firstName, u.lastName, COUNT(a.id) AS total_articles
+FROM users u
+JOIN article a ON u.id = a.user_id
+WHERE u.role = 'auteur'
+GROUP BY u.id
+ORDER BY total_articles DESC;
+
+
+SELECT c.name AS category_name
+FROM catagugry c
+LEFT JOIN article a ON c.id = a.catagugry_id
+WHERE a.id IS NULL;
