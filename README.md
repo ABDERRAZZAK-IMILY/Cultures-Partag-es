@@ -1,4 +1,4 @@
-# ArtCulture - Plateforme de Promotion de l'Art et de la Culture
+# - Plateforme de Promotion de l'Art et de la Culture
 
 ## 🎨 Description du Projet
 
