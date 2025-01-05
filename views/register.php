@@ -74,13 +74,13 @@ if (isset($_POST['submit'])) {
                 <p class="mt-2">Join our amazing community</p>
             </div>
             <div class="p-8">
-                <form class="space-y-4" method="POST">
+                <form class="space-y-4" method="POST" id="validation">
                     <div class="relative">
-                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Frist Name" name="fristname" required>
+                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Frist Name"  id="firstName" name="fristname" >
                         <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
-                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Last Name" name="lastname" required>
+                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Last Name" id="lastName" name="lastname" >
                         <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
@@ -91,11 +91,11 @@ if (isset($_POST['submit'])) {
                         <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
-                        <input type="email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Email" name="email" required>
+                        <input type="email" id="email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Email" name="email" required>
                         <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
-                        <input type="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Password" name="password" required>
+                        <input type="password" id="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Password" name="password" required>
                         <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <button class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-md hover:opacity-90 transition-opacity duration-300 transform hover:scale-105" type="submit" name="submit">Sign Up</button>
@@ -104,5 +104,54 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    const namePattern = /^[a-zA-Z\s]+$/;
+    const emailPattern = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/
+    const passwordPattern = /^(?=.*[a-zA-Z0-9]).{4,}$/;
+
+    document.getElementById('validation').addEventListener('submit', function(event) {
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (!namePattern.test(firstName) || !namePattern.test(lastName)) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Name should only contain letters and spaces.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            event.preventDefault(); 
+            return;
+        }
+
+        if (!emailPattern.test(email)) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please enter a valid email address.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            event.preventDefault(); 
+            return;
+        }
+
+        if (!passwordPattern.test(password)) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Password must be at least 4 characters long.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            event.preventDefault(); 
+            return;
+        }
+    });
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

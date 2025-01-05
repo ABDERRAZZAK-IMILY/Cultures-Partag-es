@@ -68,7 +68,7 @@ if(isset($_POST['login_submit'])){
                 <div class="flex justify-center mb-6">
                     <button @click="tab = 'login'" :class="{ 'bg-blue-500 text-white': tab === 'login', 'bg-gray-200 text-gray-700': tab !== 'login' }" class="px-4 py-2 rounded-r-md focus:outline-none transition-colors duration-300">Login</button>
                 </div>
-                <form x-show="tab === 'login'" method="POST" class="space-y-4">
+                <form x-show="tab === 'login'" method="POST" id="validation" class="space-y-4">
                     <div class="relative">
                         <input type="email" name="email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Email" required>
                         <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
@@ -83,4 +83,41 @@ if(isset($_POST['login_submit'])){
         </div>
     </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    const emailPattern = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/;
+    const passwordPattern = /^(?=.*[a-zA-Z0-9]).{4,}$/;
+
+    document.getElementById('validation').addEventListener('submit', function(event) {
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (!emailPattern.test(email)) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please enter a valid email address.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            event.preventDefault();
+            return;
+        }
+
+        if (!passwordPattern.test(password)) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Password must be at least 4 characters long.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            event.preventDefault();
+            return;
+        }
+    });
+</script>
+
+
 </html>
