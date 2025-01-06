@@ -10,11 +10,13 @@ if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    $image = $_FILES['image'];
+
         $c = new DATABASE();
         $conn = $c->getConnection();
         $visiteur = new Visteur($conn);
 
-        if ($visiteur->register($firstName, $lastName, $email, $password, $role)) {
+        if ($visiteur->register($firstName, $lastName, $email, $password, $role , $image)) {
             echo "<script>
             window.onload = function() {
                 Swal.fire({
@@ -74,7 +76,7 @@ if (isset($_POST['submit'])) {
                 <p class="mt-2">Join our amazing community</p>
             </div>
             <div class="p-8">
-                <form class="space-y-4" method="POST" id="validation">
+                <form class="space-y-4" method="POST" id="validation" enctype="multipart/form-data">
                     <div class="relative">
                         <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Frist Name"  id="firstName" name="fristname" >
                         <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
@@ -93,6 +95,10 @@ if (isset($_POST['submit'])) {
                     <div class="relative">
                         <input type="email" id="email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Email" name="email" required>
                         <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <div class="relative">
+                        <input type="file" id="image" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="image" name="image" required>
+                        <i class="fas fa-image absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
                         <input type="password" id="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Password" name="password" required>

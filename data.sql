@@ -8,6 +8,7 @@ CREATE TABLE users (
     firstName VARCHAR(250) NOT NULL,
     lastName VARCHAR(250) NOT NULL,
     email VARCHAR(250) NOT NULL UNIQUE,
+    image VARCHAR(600),
     password VARCHAR(250) NOT NULL,
     role ENUM('visteur','admin' , 'auteur'),
     
@@ -30,9 +31,16 @@ CREATE TABLE article (
 );
 
 
+CREATE TABLE tags (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    tagsname VARCHAR(250) NOT NULL,
+);
 
 
-
+CREATE TABLE comment (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    commentname VARCHAR(800) NOT NULL,
+);
 
 
 --script
