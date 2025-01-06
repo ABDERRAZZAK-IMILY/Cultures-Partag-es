@@ -37,9 +37,22 @@ CREATE TABLE tags (
 );
 
 
-CREATE TABLE comment (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    commentname VARCHAR(800) NOT NULL,
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL, 
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    FOREIGN KEY (article_id) REFERENCES article(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+CREATE TABLE likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,    
+    article_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (article_id) REFERENCES article(id)
 );
 
 

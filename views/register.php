@@ -3,6 +3,12 @@ require_once '../model/USER.php';
 require_once '../model/db_connect.php';
 require_once '../model/Visteur.php';
 
+require '../vendor/autoload.php';
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 if (isset($_POST['submit'])) {
     $firstName = $_POST['fristname'];
     $lastName = $_POST['lastname'];
@@ -17,6 +23,28 @@ if (isset($_POST['submit'])) {
         $visiteur = new Visteur($conn);
 
         if ($visiteur->register($firstName, $lastName, $email, $password, $role , $image)) {
+            // $mail = new PHPMailer(true);
+            // try {
+            //     $mail->isSMTP();
+            //     $mail->Host = 'smtp.gmail.com';
+            //     $mail->SMTPAuth = true;
+            //     $mail->Username = 'breif20251@gmail.com';
+            //     $mail->Password = 'imily2018'; 
+            //     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            //     $mail->Port = 587;
+    
+                
+            //     $mail->setFrom('breif20251@gmail.com', 'ABDERRAZZAK IMILY');
+            //     $mail->addAddress($email);
+            //     $mail->isHTML(true);
+            //     $mail->Subject = 'Welcome to our blog!';
+            //     $mail->Body    = 'Welcome to our blog. We are excited to have you with us! Enjoy your time!';
+    
+            //     $mail->send();
+            //     echo 'Message has been sent';
+            // } catch (Exception $e) {
+            //     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            // }
             echo "<script>
             window.onload = function() {
                 Swal.fire({
@@ -25,8 +53,12 @@ if (isset($_POST['submit'])) {
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });
+
+                
             }
-          </script>";        } else {
+          </script>"; 
+
+        } else {
             echo "<script>
             window.onload = function() {
                 Swal.fire({
