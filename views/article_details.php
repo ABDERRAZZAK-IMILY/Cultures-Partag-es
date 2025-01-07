@@ -3,7 +3,7 @@ require_once '../model/db_connect.php';
 
 session_start();
 
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+if (isset($_GET['id'])) {
     $article_id = $_GET['id'];
 
     $conn = (new DATABASE())->getConnection();

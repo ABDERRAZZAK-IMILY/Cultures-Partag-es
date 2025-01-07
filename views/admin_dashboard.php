@@ -31,6 +31,7 @@ if (isset($_POST['createCategory'])) {
     $categoryName = $_POST['categoryName'];
     $A = new Admin($conn);
     $create = $A->createCategory($categoryName);
+    header('Location: ' . $_SERVER['PHP_SELF']);
 }
 
 if (isset($_POST['modifyCategory'])) {
@@ -38,17 +39,21 @@ if (isset($_POST['modifyCategory'])) {
     $newCategoryName = $_POST['newCategoryName'];
     $A = new Admin($conn);
     $modify = $A->modifyCategory($newCategoryName, $categoryId);
+    header('Location: ' . $_SERVER['PHP_SELF']);
 }
 
 if (isset($_POST['removeCategory'])) {
     $categoryId = $_POST['categoryId'];
     $remove = $A->removeCategory($categoryId);
+    header('Location: ' . $_SERVER['PHP_SELF']);
+
 }
 
 if (isset($_POST['acceptArticle'])) {
     $articleId = $_POST['articleId'];
     if (!empty($articleId)) {
         $accept = $A->acceptArticle($articleId);
+
     }
 }
 

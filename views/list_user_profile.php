@@ -26,7 +26,17 @@ if (isset($_GET['ban_user_id'])) {
     $updateStmt = $conn->prepare($updateQuery);
     $updateStmt->bindParam(':id', $userId, PDO::PARAM_INT);
     if ($updateStmt->execute()) {
-        echo "User has been banned.";
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Success!',
+                text: 'User has been banned',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>"; 
+
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     } else {
@@ -43,6 +53,8 @@ if (isset($_GET['ban_user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Users Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 

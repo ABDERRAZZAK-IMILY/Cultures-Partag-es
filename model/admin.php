@@ -43,7 +43,16 @@ public function modifyCategory($newCategoryName , $categoryId){
 
     $stmt = $conn->prepare("UPDATE catagugry SET name = ? WHERE id = ?");
     if ($stmt->execute([$newCategoryName, $categoryId])) {
-        $message = 'Category updated successfully!';
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Category updated successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>"; 
     } else {
         echo "<script>
         window.onload = function() {
@@ -74,7 +83,16 @@ public function modifyCategory($newCategoryName , $categoryId){
         }
       </script>"; 
         } else {
-        $message = 'Error occurred while removing the category!';
+        echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error occurred while removing the category!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+      </script>"; 
     }
 
 
