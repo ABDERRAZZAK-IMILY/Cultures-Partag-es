@@ -6,6 +6,7 @@ require_once '../model/Visteur.php';
 require '../vendor/autoload.php';
 
 
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -30,8 +31,8 @@ if (isset($_POST['submit'])) {
             //     $mail->SMTPAuth = true;
             //     $mail->Username = 'breif20251@gmail.com';
             //     $mail->Password = 'imily2018'; 
-            //     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            //     $mail->Port = 587;
+            //     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            //     $mail->Port = 465;
     
                 
             //     $mail->setFrom('breif20251@gmail.com', 'ABDERRAZZAK IMILY');

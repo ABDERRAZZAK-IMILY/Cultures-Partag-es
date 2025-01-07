@@ -26,7 +26,22 @@ public function __construct($dbConn) {
 
 
 public function login($email, $password) {
+
+
+
+
     $user = $this->getUserByEmail($email);
+
+    if ($user && password_verify($password, $user['password'])) {
+        if ($user['status'] === 'banned') {
+            header('Location: 401.php');
+            exit;
+        }
+        $this->initializeSession($user);
+        return true;
+    }
+    return false;
+
     if ($user && password_verify($password, $user['password'])) {
         $this->initializeSession($user);
         return true;
