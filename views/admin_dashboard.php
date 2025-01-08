@@ -19,6 +19,51 @@ if ($stmt && $stmt->rowCount() > 0) {
     }
 }
 
+
+
+
+
+/*************************************************tags function */
+
+$Tags = [];
+$article_by_Tags = [];
+
+$tg = "SELECT id,tagsname FROM tags";
+
+$stmt2 = $conn->query($tg);
+if ($stmt2 && $stmt2->rowCount() > 0) {
+    while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+        $Tags[] = $row;
+        $articles_by_Tags[$row['id']] = [];
+    }
+}
+
+
+if (isset($_POST['createTag'])) {
+    $tagName = $_POST['tagName'];
+    $A = new Admin($conn);
+    $create = $A->createTags($tagName);
+    header('Location: ' . $_SERVER['PHP_SELF']);
+}
+
+if (isset($_POST['removetag'])) {
+    $TagsId = $_POST['tagId'];
+    $A = new Admin($conn);
+    $create = $A->removeTags($TagsId);
+    header('Location: ' . $_SERVER['PHP_SELF']);
+}
+
+
+if (isset($_POST['modifytags'])) {
+    $categoryId = $_POST['tagId'];
+    $newCategoryName = $_POST['newtagName'];
+    $A = new Admin($conn);
+    $modify = $A->modifyTags($newCategoryName, $categoryId);
+    header('Location: ' . $_SERVER['PHP_SELF']);
+}
+
+
+/****************************** catagogty function and article */
 $article_query = "SELECT id, title, catagugry_id, statu FROM article";
 $article_stmt = $conn->query($article_query);
 if ($article_stmt && $article_stmt->rowCount() > 0) {
@@ -95,13 +140,9 @@ if (isset($_POST['rejectArticle'])) {
                     <i class="fas fa-users mr-3"></i>
                     Gestion des utilisateurs
                 </a>
-                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
-                    <i class="fas fa-clipboard-list mr-3"></i>
-                    Gestion des catégories
-                </a>
-                <a href="#ArticleManagement" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                <a href="../views/commentaires.php" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
                     <i class="fas fa-newspaper mr-3"></i>
-                    Gestion des articles
+                    Gestion des commentaires
                 </a>
                 <a href="../views/logout.php" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
                     <i class="fas fa-sign-out-alt mr-3"></i>
@@ -244,6 +285,82 @@ if (isset($_POST['rejectArticle'])) {
                     </tbody>
                 </table>
             </div>
+
+
+
+    
+
+
+
+
+            
+
+            <div class="p-10 flex flex-wrap gap-8 bg-gray-200">
+                <!-- Create tag -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white shadow-md p-6 rounded-md">
+                        <h3 class="text-xl font-semibold mb-4">Create TAGS</h3>
+                        <form method="POST">
+                            <label for="categoryName" class="block text-gray-700">TAG Name</label>
+                            <input type="text" name="tagName" id="categoryName" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <button type="submit" name="createTag" class="mt-4 w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create TAG</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modify tag -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white shadow-md p-6 rounded-md">
+                        <h3 class="text-xl font-semibold mb-4">Modify TAG</h3>
+                        <form method="POST">
+                            <label for="tagId" class="block text-gray-700">tag ID</label>
+                            <input type="number" name="tagId" id="categoryId" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <label for="newtagName" class="block text-gray-700 mt-4">New tag Name</label>
+                            <input type="text" name="newtagName" id="newCategoryName" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <button type="submit" name="modifyTags" class="mt-4 w-full py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700">Modify tag</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Remove tag -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white shadow-md p-6 rounded-md">
+                        <h3 class="text-xl font-semibold mb-4">Remove tag</h3>
+                        <form method="POST">
+                            <label for="categoryId" class="block text-gray-700">tag ID</label>
+                            <input type="number" name="tagId" id="categoryId" class="w-full p-2 border border-gray-300 rounded-md" required>
+                            <button type="submit" name="removetag" class="mt-4 w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Remove tag</button>
+                        </form>
+                    </div>
+                </div>
+              
+                
+
+
+ <!-- tags Table -->
+ <div class="overflow-x-auto p-4 bg-white rounded-lg shadow-md">
+                <table class="table-auto w-full border-collapse border border-gray-200">
+                    <thead class="bg-orange-700 text-white">
+                        <tr>
+                            <th class="px-4 py-2 border border-gray-300">ID TAGS</th>
+                            <th class="px-4 py-2 border border-gray-300">TAGS Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($Tags as $TAG): ?>
+                        <tr class="odd:bg-purple-50 even:bg-purple-100 hover:bg-purple-200">
+                            <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($TAG['id']) ?></td>
+                            <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($TAG['tagsname']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
 
         </section>
     </main>

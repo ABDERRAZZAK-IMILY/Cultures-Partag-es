@@ -2,13 +2,18 @@
 
 require_once '../model/db_connect.php';
 
+require_once '../model/admin.php';
+
 session_start();
 
 $conn = (new DATABASE())->getConnection();
 
+
+$A = new Admin($conn);
+
 $userprofile = [];
 
-$query = "SELECT * FROM users";
+$query = "SELECT * FROM users where id != 2 ";
 $stmt = $conn->query($query);
 
 if ($stmt && $stmt->rowCount() > 0) {
@@ -22,26 +27,10 @@ if ($stmt && $stmt->rowCount() > 0) {
 if (isset($_GET['ban_user_id'])) {
     $userId = $_GET['ban_user_id'];
 
-    $updateQuery = "UPDATE users SET status = 'banned' WHERE id = :id";
-    $updateStmt = $conn->prepare($updateQuery);
-    $updateStmt->bindParam(':id', $userId, PDO::PARAM_INT);
-    if ($updateStmt->execute()) {
-        echo "<script>
-        window.onload = function() {
-            Swal.fire({
-                title: 'Success!',
-                text: 'User has been banned',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        }
-      </script>"; 
+    
+$bannuser = $A->BannUsers($userId);
 
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    } else {
-        echo "Failed to ban user.";
-    }
+
 }
 
 ?>
@@ -81,7 +70,7 @@ if (isset($_GET['ban_user_id'])) {
                 <td class="px-4 py-2 border border-gray-300">
                     <?php if ($user['status'] == 'active'): ?>
                         <a href="?ban_user_id=<?= $user['id'] ?>" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                            Ban Account
+                            Ban account
                         </a>
                     <?php else: ?>
                         <span class="text-gray-500">Banned</span>

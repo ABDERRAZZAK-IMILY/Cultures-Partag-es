@@ -12,6 +12,59 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     $categoryQuery = "SELECT id, name FROM catagugry";
     $stmt = $conn->query($categoryQuery);
 
+
+
+    $tags = [];
+
+    $tagsQuery = "SELECT * FROM tags";
+
+    $stmt2 = $conn->query($tagsQuery);
+
+    if ($stmt2 && $stmt2->rowCount() > 0) {
+        while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+            $tags[] = $row;
+        }
+    }
+
+
+    if (isset($_POST['tageadd'])) {
+        $articleid = $_POST['articleId']; 
+        $tagid = $_POST['tagsname'];
+
+        if (isset($articleid) && !empty($articleid) && isset($tagid) && !empty($tagid)) {
+            $addtagsid = "INSERT INTO article_tags (id_article, id_tags) VALUES (?, ?)";
+            $stmt3 = $conn->prepare($addtagsid);
+
+            if ($stmt3->execute([$articleid, $tagid])) {
+                echo 'tag id added successfully!';
+            } else {
+                echo 'error: unable to add tag to article.';
+            }
+        }
+    }
+
+
+$fetchTages = [];
+
+$fetchtagesquery = "SELECT tagsname, id_article FROM article_tags join tags on article_tags.id_tags = tags.id join article on article_tags.id_article = article.id where id_article = $articleid";
+
+
+
+$stmt4 = $conn->query($fetchtagesquery);
+
+
+
+if ($stmt4 && $stmt4->rowCount() > 0) {
+    while ($row = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+        $fetchTages[] = $row;
+    }
+}
+
+
+
+
+
+
     if ($stmt && $stmt->rowCount() > 0) {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $categories[] = $row;
@@ -122,7 +175,26 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
             <!-- Dashboard -->
             <div class="p-10 flex items-center gap-8 flex-wrap lg:grid lg:grid-cols-2 bg-gray-200">
                 <?php foreach ($articles as $article): ?>
+
+
                 <article class="relative bg-white shadow-md rounded-md">
+
+
+                 <form method="POST">
+                 <input type="hidden" name="articleId" value="<?= $article['id'] ?>">
+                            <label for="catagury" class="block text-gray-700">Tags</label>
+                            <select id="tagname" name="tagsname" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <?php foreach ($tags as $tag): ?>
+                                    <option  id="tagname" value="<?= $tag['id'] ?>"><?= $tag['tagsname'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button id="addtags" type="submit" name="tageadd" class="py-2 px-5 rounded-sm text-white bg-red-200 text-sm duration-500 hover:bg-red-700">add tag</button>
+                                </form>
+                        <!--tags added!-->
+                        <div id="selectedTagsContainer">
+                    
+
+                        </div>
                     <div>
                         <img class="object-cover w-full h-52 dark:bg-gray-500" src="<?= htmlspecialchars($article['image']) ?>" alt="Article Image">
                     </div>
@@ -167,7 +239,15 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                             </form>
                         </div>
                     </div>
+                    
                     <p class="absolute top-2 right-2 bg-white bg-opacity-85 py-1 px-3 rounded-md text-xs"><?= htmlspecialchars($article['category_name']) ?></p>
+                
+   <!-- Display Tags -->
+   <div id="selectedTagsContainer" class="mt-2">
+                            <?php foreach ($fetchTages as $tag): ?>
+                                <span class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"><?= htmlspecialchars($tag['tagsname']) ?></span>
+                            <?php endforeach; ?>
+                        </div>
                 </article>
                 <?php endforeach; ?>
             </div>
@@ -181,23 +261,24 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                     <div class="space-y-4">
                         <div>
                             <label for="articleTitle" class="block text-gray-700">Article Title</label>
-                            <input type="text" id="articleTitle" name="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <input type="text" id="articleTitle" name="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label for="articleTitle" class="block text-gray-700">Article image url</label>
-                            <input type="text" id="articleTitle" name="image" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <input type="text" id="articleTitle" name="image" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
                         </div>
                         <div>
                             <label for="catagury" class="block text-gray-700">Category</label>
-                            <select id="catagury" name="cataguryname" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <select id="catagury" name="cataguryname" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <?php foreach ($categories as $category): ?>
                                     <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
                                 <?php endforeach; ?>
                             </select>
-                        </div>
+                        </div>    
+
                         <div>
                             <label for="articleContent" class="block text-gray-700">Article Content</label>
-                            <textarea id="articleContent" name="content" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                            <textarea id="articleContent" name="content" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                         </div>
                         <div>
                             <button type="submit" name="createArticle" class="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">Create Article</button>
@@ -217,6 +298,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
             editForm.style.display = (editForm.style.display === "none") ? "block" : "none";
         };
     });
-</script>
+    </script>
 
 </html>

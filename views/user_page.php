@@ -1,9 +1,28 @@
 <?php
 require_once '../model/db_connect.php';
 
-require_once '../model/USER.php';
 
 session_start();
+
+$conn = (new DATABASE())->getConnection();
+
+
+$fetchTages = [];
+
+$fetchtagesquery = "SELECT tagsname, id_article FROM article_tags join tags on article_tags.id_tags = tags.id join article on article_tags.id_article = article.id;";
+
+
+
+$stmt4 = $conn->query($fetchtagesquery);
+
+
+
+if ($stmt4 && $stmt4->rowCount() > 0) {
+    while ($row = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+        $fetchTages[] = $row;
+    }
+}
+
 
 
 $conn = (new DATABASE())->getConnection();
@@ -59,9 +78,21 @@ if ($stmt && $stmt->rowCount() > 0) {
                     <div class="absolute top-4 right-4 bg-white bg-opacity-80 py-1 px-3 rounded-md text-xs">
                         <p class="text-gray-700"><?= htmlspecialchars($article['name']) ?></p>
                     </div>
-                </article>
-                <?php endforeach; ?>
+                                     <!-- Display Tags -->
+   <div id="selectedTagsContainer" class="mt-2">
+                            <?php foreach ($fetchTages as $tag): ?>
+                                <span class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"><?= htmlspecialchars($tag['tagsname']) ?></span>
+                            <?php endforeach; ?>
             </div>
+                </article>
+                
+                <?php endforeach; ?>
+ 
+
+ 
+                
+            </div>
+
         </div>
     </section>
 

@@ -3,7 +3,8 @@
 require_once 'db_connect.php';
 
 
-class User {
+
+abstract class User {
 
 
 public $fristname;
@@ -80,6 +81,7 @@ public function logout() {
     session_unset();
     session_destroy();
 }
+
 
 }
 ?>

@@ -41,10 +41,23 @@
                 Suspendisse potenti. Proin ac libero nec arcu vehicula tincidunt. Curabitur sit amet eros nec justo vehicula fermentum. 
                 Donec vel libero at libero tincidunt tincidunt. Sed sit amet magna a libero tincidunt tincidunt.
     </p>
+    <div class="container mx-auto p-6">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-lg font-semibold mb-4">Tag Cloud</h2>
+            <div class="flex flex-wrap gap-2">
+                <a href="#" class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm">Technology</a>
+                <a href="#" class="bg-green-200 hover:bg-green-300 py-1 px-2 rounded-lg text-sm">Programming</a>
+                <a href="#" class="bg-yellow-200 hover:bg-yellow-300 py-1 px-2 rounded-lg text-sm">Web Development</a>
+                <a href="#" class="bg-indigo-200 hover:bg-indigo-300 py-1 px-2 rounded-lg text-sm">Design</a>
+                <a href="#" class="bg-purple-200 hover:bg-purple-300 py-1 px-2 rounded-lg text-sm">AI</a>
+                <a href="#" class="bg-pink-200 hover:bg-pink-300 py-1 px-2 rounded-lg text-sm">Machine Learning</a>
+            </div>
+        </div>
+    </div>
     <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
      <i class="fas fa-thumbs-up">
      </i>
-     J'aime
+     ajouter to liked articles
     </button>
    </article>
    <section class="mt-8">
@@ -59,7 +72,7 @@
       <textarea class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="comment" placeholder="Écrivez votre commentaire ici..." rows="4"></textarea>
      </div>
      <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" type="submit">
-      Soumettre
+      save commentaire
      </button>
     </form>
    </section>

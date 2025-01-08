@@ -2,7 +2,7 @@
 
 <?php
 
-require_once '../model/USER.php';
+require_once '../model/visteur.php';
 require_once '../model/db_connect.php';
 
 
@@ -12,7 +12,7 @@ if(isset($_POST['login_submit'])){
     session_start();
     $c = new DATABASE();
     $conn = $c->getConnection();
-    $login = new USER($conn);
+    $login = new Visteur($conn);
 
  $email = $_POST['email'];
  $password = $_POST['password'];
