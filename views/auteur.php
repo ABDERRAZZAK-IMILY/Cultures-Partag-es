@@ -31,16 +31,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         $articleid = $_POST['articleId']; 
         $tagid = $_POST['tagsname'];
 
-        if (isset($articleid) && !empty($articleid) && isset($tagid) && !empty($tagid)) {
-            $addtagsid = "INSERT INTO article_tags (id_article, id_tags) VALUES (?, ?)";
-            $stmt3 = $conn->prepare($addtagsid);
-
-            if ($stmt3->execute([$articleid, $tagid])) {
-                echo 'tag id added successfully!';
-            } else {
-                echo 'error: unable to add tag to article.';
-            }
-        }
+      $tagadd = $A->Tagadd($articleid , $tagid);
     }
 
 
