@@ -39,7 +39,7 @@ if(isset($_POST['comment_submit'])){
 
 
 
-    
+
 
 }
 
@@ -53,23 +53,6 @@ if(isset($_POST['comment_submit'])){
     exit;
 }
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <html lang="fr">
@@ -98,19 +81,31 @@ if(isset($_POST['comment_submit'])){
     <p class="text-gray-700 mb-6">
  <?php echo nl2br(htmlspecialchars($article['description'])); ?>
     </p>
-    <div class="container mx-auto p-6">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-lg font-semibold mb-4">Tag Cloud</h2>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-20">
+            <h2 class="text-lg font-semibold mb-4">Tags</h2>
             <div class="flex flex-wrap gap-2">
-                <a href="#" class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm">Technology</a>
-                <a href="#" class="bg-green-200 hover:bg-green-300 py-1 px-2 rounded-lg text-sm">Programming</a>
-                <a href="#" class="bg-yellow-200 hover:bg-yellow-300 py-1 px-2 rounded-lg text-sm">Web Development</a>
-                <a href="#" class="bg-indigo-200 hover:bg-indigo-300 py-1 px-2 rounded-lg text-sm">Design</a>
-                <a href="#" class="bg-purple-200 hover:bg-purple-300 py-1 px-2 rounded-lg text-sm">AI</a>
-                <a href="#" class="bg-pink-200 hover:bg-pink-300 py-1 px-2 rounded-lg text-sm">Machine Learning</a>
+                <!-- Display Tags -->
+                <div id="selectedTagsContainer" class="mt-2">
+                            <?php
+                            $articleTagsQuery = "SELECT tagsname 
+                                                FROM article_tags 
+                                                JOIN tags ON article_tags.id_tags = tags.id 
+                                                WHERE id_article = :articleid";
+                            $stmtTags = $conn->prepare($articleTagsQuery);
+                            $stmtTags->bindParam(':articleid', $article['id'], PDO::PARAM_INT);
+                            $stmtTags->execute();
+                            $articleTags = $stmtTags->fetchAll(PDO::FETCH_ASSOC);
+                            ?>
+                            <?php foreach ($articleTags as $tag): ?>
+                                <span class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"><?= htmlspecialchars($tag['tagsname']) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+
             </div>
         </div>
-    </div>
+                   
+
     <form action="" method="POST">
     <button  type="submit" name="likedarticle" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
      <i class="fas fa-thumbs-up">

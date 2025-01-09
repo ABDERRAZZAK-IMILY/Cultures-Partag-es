@@ -21,12 +21,7 @@ if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'){
             $categories[] = $row;
             $articles_by_category[$row['id']] = [];
         }
-    }
-    
-    
-    
-    
-    
+    }    
     /*************************************************tags function */
     
     $Tags = [];

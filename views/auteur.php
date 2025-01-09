@@ -233,7 +233,14 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                     <p class="absolute top-2 right-2 bg-white bg-opacity-85 py-1 px-3 rounded-md text-xs"><?= htmlspecialchars($article['category_name']) ?></p>
                 
   <!-- Display Tags -->
-  <div id="selectedTagsContainer" class="mt-2">
+
+
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-lg font-semibold mb-4">Tags</h2>
+            <div class="flex flex-wrap gap-2">
+
+
+            <div id="selectedTagsContainer" class="mt-2">
                             <?php
                             $articleTagsQuery = "SELECT tagsname 
                                                 FROM article_tags 
@@ -248,6 +255,9 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                                 <span class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"><?= htmlspecialchars($tag['tagsname']) ?></span>
                             <?php endforeach; ?>
                         </div>
+            </div>
+        </div>
+                        
 
 
 

@@ -133,7 +133,7 @@ if ($stmt && $stmt->rowCount() > 0) {
 
                     <div class="p-4">
                         <p class="text-sm text-gray-500"><?= date("F j, Y", strtotime($article['date_creation'])) ?></p>
-                        <a href="../views/article_details.php?id=<?php echo $_article['id']; ?>" class="text-gray-900 font-semibold text-xl mt-2 mb-3"><?= htmlspecialchars($article['title']) ?></a>
+                        <a href="../views/article_details.php?id=<?php  $_article['id']; ?>" class="text-gray-900 font-semibold text-xl mt-2 mb-3"><?= htmlspecialchars($article['title']) ?></a>
                         <p class="text-gray-700 text-md"><?= htmlspecialchars($article['description']) ?></p>
                     </div>
 
@@ -142,8 +142,11 @@ if ($stmt && $stmt->rowCount() > 0) {
                     </div>
 
 
-                     <!-- Display Tags -->
-                        <div id="selectedTagsContainer" class="mt-2">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-lg font-semibold mb-4">Tags</h2>
+            <div class="flex flex-wrap gap-2">
+                <!-- Display Tags -->
+                <div id="selectedTagsContainer" class="mt-2">
                             <?php
                             $articleTagsQuery = "SELECT tagsname 
                                                 FROM article_tags 
@@ -159,6 +162,9 @@ if ($stmt && $stmt->rowCount() > 0) {
                             <?php endforeach; ?>
                         </div>
 
+            </div>
+        </div>
+                    
              
                 </article>
                 
