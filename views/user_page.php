@@ -67,7 +67,7 @@ $conn = (new DATABASE())->getConnection();
 $articles = [];
 
 
-$query = "SELECT description, image, date_creation, title, name FROM article join catagugry on catagugry.id = article.catagugry_id WHERE statu = 'accepted'";
+$query = "SELECT article.id  , description, image, date_creation, title, name FROM article join catagugry on catagugry.id = article.catagugry_id WHERE statu = 'accepted'";
 $stmt = $conn->query($query);
 
 if ($stmt && $stmt->rowCount() > 0) {
@@ -143,7 +143,7 @@ if ($stmt && $stmt->rowCount() > 0) {
 
 
                      <!-- Display Tags -->
-                     <div id="selectedTagsContainer" class="mt-2">
+                        <div id="selectedTagsContainer" class="mt-2">
                             <?php
                             $articleTagsQuery = "SELECT tagsname 
                                                 FROM article_tags 
