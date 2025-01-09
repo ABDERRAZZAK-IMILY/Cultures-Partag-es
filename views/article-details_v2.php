@@ -1,3 +1,58 @@
+<?php
+require_once '../model/db_connect.php';
+
+session_start();
+
+if (isset($_GET['id'])) {
+    $article_id = $_GET['id'];
+
+    $conn = (new DATABASE())->getConnection();
+
+    $query = "SELECT a.id, a.title, a. description, a.image, a.date_creation, c.name
+              FROM article a
+              JOIN catagugry c ON a.catagugry_id = c.id
+              JOIN users u ON a.user_id = u.id
+              WHERE a.id = :article_id AND a.statu = 'accepted'"; 
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        $article = $stmt->fetch(PDO::FETCH_ASSOC);
+    } else {
+        echo "article not found or not accepted.";
+        exit;
+    }
+
+
+
+
+  if(isset($_POST['likedarticle'])){
+
+
+
+
+  }
+
+if(isset($_POST['comment_submit'])){
+
+
+
+
+    
+
+}
+
+
+
+
+
+
+} else {
+    echo "Invalid article ID.";
+    exit;
+}
+?>
 
 
 
@@ -33,13 +88,15 @@
   <div class="max-w-4xl mx-auto p-4">
    <article class="bg-white p-6 rounded-lg shadow-md">
     <h1 class="text-3xl font-bold mb-4">
-     Titre de l'article
+    <?php echo htmlspecialchars($article['title']); ?>
     </h1>
-    <img alt="Image descriptive de l'article avec des détails visuels pertinents" class="w-full h-auto mb-4 rounded-lg" height="400" src="https://storage.googleapis.com/a1aa/image/wqQyd3CdkR7hCliwPToeq8xfgoaPAi33px0IiizxgqoWKoCUA.jpg" width="800"/>
+    <a href="#" class="py-2 text-green-700 inline-flex items-center justify-center mb-2">
+            <?php echo htmlspecialchars($article['name']); ?>
+          </a>
+
+    <img alt="Image descriptive de l'article avec des détails visuels pertinents" class="w-full h-auto mb-4 rounded-lg" height="400" src="<?php echo htmlspecialchars($article['image']); ?>" width="800"/>
     <p class="text-gray-700 mb-6">
-     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque leo nec magna fermentum, a facilisis nulla cursus. Integer nec odio nec urna fermentum tincidunt. 
-                Suspendisse potenti. Proin ac libero nec arcu vehicula tincidunt. Curabitur sit amet eros nec justo vehicula fermentum. 
-                Donec vel libero at libero tincidunt tincidunt. Sed sit amet magna a libero tincidunt tincidunt.
+ <?php echo nl2br(htmlspecialchars($article['description'])); ?>
     </p>
     <div class="container mx-auto p-6">
         <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -54,28 +111,56 @@
             </div>
         </div>
     </div>
-    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+    <form action="" method="POST">
+    <button  type="submit" name="likedarticle" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
      <i class="fas fa-thumbs-up">
      </i>
      ajouter to liked articles
     </button>
-   </article>
-   <section class="mt-8">
-    <h2 class="text-2xl font-bold mb-4">
-     Ajouter un commentaire
-    </h2>
-    <form class="bg-white p-6 rounded-lg shadow-md">
-     <div class="mb-4">
-      <label class="block text-gray-700 font-bold mb-2" for="comment">
-       Commentaire:
-      </label>
-      <textarea class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="comment" placeholder="Écrivez votre commentaire ici..." rows="4"></textarea>
-     </div>
-     <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" type="submit">
-      save commentaire
-     </button>
     </form>
-   </section>
+   </article>
+   <div class="bg-gray-100 p-6">
+    <h2 class="text-lg font-bold mb-4">Comments</h2>
+    <div class="flex flex-col space-y-4">
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold">John Doe</h3>
+            <p class="text-gray-700 text-sm mb-2">Posted on April 17, 2023</p>
+            <p class="text-gray-700">This is a sample comment. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold">Jane Smith</h3>
+            <p class="text-gray-700 text-sm mb-2">Posted on April 16, 2023</p>
+            <p class="text-gray-700">I agree with John. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold">Bob Johnson</h3>
+            <p class="text-gray-700 text-sm mb-2">Posted on April 15, 2023</p>
+            <p class="text-gray-700">I have a different opinion. Lorem ipsum dolor sit amet, consectetur adipiscing
+                elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+        </div>
+        <form class="bg-white p-4 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold mb-2">Add a comment</h3>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold mb-2" for="comment">
+                    Comment
+                </label>
+                <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="comment" rows="3" name="comment" placeholder="Enter your comment"></textarea>
+            </div>
+            <button
+                class="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                name="comment_submit" type="submit">
+                Submit
+            </button>
+        </form>
+    </div>
+</div>
   </div>
  </body>
 </html>

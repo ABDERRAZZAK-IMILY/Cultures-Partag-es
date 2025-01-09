@@ -35,21 +35,20 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
     }
 
 
-$fetchTages = [];
-
-$fetchtagesquery = "SELECT tagsname, id_article FROM article_tags join tags on article_tags.id_tags = tags.id join article on article_tags.id_article = article.id where id_article = $articleid";
-
-
-
-$stmt4 = $conn->query($fetchtagesquery);
+// $fetchTages = [];
+// $fetchtagesquery = "SELECT tagsname, id_article FROM article_tags join tags on article_tags.id_tags = tags.id join article on article_tags.id_article = article.id where id_article = $articleid";
 
 
 
-if ($stmt4 && $stmt4->rowCount() > 0) {
-    while ($row = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-        $fetchTages[] = $row;
-    }
-}
+// $stmt4 = $conn->query($fetchtagesquery);
+
+
+
+// if ($stmt4 && $stmt4->rowCount() > 0) {
+//     while ($row = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+//         $fetchTages[] = $row;
+//     }
+// }
 
 
 
@@ -141,7 +140,7 @@ if ($stmt4 && $stmt4->rowCount() > 0) {
                     <i class="fas fa-plus-circle mr-3"></i>
                     Nouvel Article
                 </a>
-                <a href="login.html"
+                <a href="logout.php"
                     class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
                     <i class="fas fa-sign-out-alt mr-3"></i>
                     Déconnexion
@@ -233,12 +232,26 @@ if ($stmt4 && $stmt4->rowCount() > 0) {
                     
                     <p class="absolute top-2 right-2 bg-white bg-opacity-85 py-1 px-3 rounded-md text-xs"><?= htmlspecialchars($article['category_name']) ?></p>
                 
-   <!-- Display Tags -->
-   <div id="selectedTagsContainer" class="mt-2">
-                            <?php foreach ($fetchTages as $tag): ?>
+  <!-- Display Tags -->
+  <div id="selectedTagsContainer" class="mt-2">
+                            <?php
+                            $articleTagsQuery = "SELECT tagsname 
+                                                FROM article_tags 
+                                                JOIN tags ON article_tags.id_tags = tags.id 
+                                                WHERE id_article = :articleid";
+                            $stmtTags = $conn->prepare($articleTagsQuery);
+                            $stmtTags->bindParam(':articleid', $article['id'], PDO::PARAM_INT);
+                            $stmtTags->execute();
+                            $articleTags = $stmtTags->fetchAll(PDO::FETCH_ASSOC);
+                            ?>
+                            <?php foreach ($articleTags as $tag): ?>
                                 <span class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"><?= htmlspecialchars($tag['tagsname']) ?></span>
                             <?php endforeach; ?>
                         </div>
+
+
+
+
                 </article>
                 <?php endforeach; ?>
             </div>

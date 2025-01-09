@@ -50,7 +50,7 @@ public function login($email, $password) {
     return false;
 }
 
-private function initializeSession($user) {
+  private function initializeSession($user) {
     session_start();
 
     $_SESSION['user_id'] = $user['id'];

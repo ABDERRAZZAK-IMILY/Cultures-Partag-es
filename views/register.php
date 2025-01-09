@@ -6,6 +6,9 @@ require_once '../model/Visteur.php';
 
 
 if (isset($_POST['submit'])) {
+
+    require_once '../views/mail.php';
+
     $firstName = $_POST['fristname'];
     $lastName = $_POST['lastname'];
     $role = $_POST['role'];
@@ -19,6 +22,13 @@ if (isset($_POST['submit'])) {
         $visiteur = new Visteur($conn);
 
         if ($visiteur->register($firstName, $lastName, $email, $password, $role , $image)) {
+
+
+            $mail->setFrom('imily2024@gmail.com', 'abderrazzak imily');
+            $mail->addAddress($email);
+            $mail->Subject = "MESSSAGE";
+            $mail->Body    = "WELCOM TO OUR COMMIONTE";
+
             echo "<script>
             window.onload = function() {
                 Swal.fire({

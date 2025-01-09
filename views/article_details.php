@@ -8,7 +8,7 @@ if (isset($_GET['id'])) {
 
     $conn = (new DATABASE())->getConnection();
 
-    $query = "SELECT a.id, a.title, a. description, a.image, a.date_creation, c.name as category_name, u.name as author_name 
+    $query = "SELECT a.id, a.title, a. description, a.image, a.date_creation, c.name
               FROM article a
               JOIN catagugry c ON a.catagugry_id = c.id
               JOIN users u ON a.user_id = u.id

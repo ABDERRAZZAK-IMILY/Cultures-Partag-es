@@ -7,107 +7,117 @@ session_start();
 $A = new Admin($conn);
 $conn = (new DATABASE())->getConnection();
 
-$categories = [];
-$articles_by_category = [];
 
-$aq = "SELECT id, name FROM catagugry";
-$stmt = $conn->query($aq);
-if ($stmt && $stmt->rowCount() > 0) {
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $categories[] = $row;
-        $articles_by_category[$row['id']] = [];
+if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'){
+
+
+    $categories = [];
+    $articles_by_category = [];
+    
+    $aq = "SELECT id, name FROM catagugry";
+    $stmt = $conn->query($aq);
+    if ($stmt && $stmt->rowCount() > 0) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $categories[] = $row;
+            $articles_by_category[$row['id']] = [];
+        }
     }
-}
-
-
-
-
-
-/*************************************************tags function */
-
-$Tags = [];
-$article_by_Tags = [];
-
-$tg = "SELECT id,tagsname FROM tags";
-
-$stmt2 = $conn->query($tg);
-if ($stmt2 && $stmt2->rowCount() > 0) {
-    while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-        $Tags[] = $row;
-        $articles_by_Tags[$row['id']] = [];
+    
+    
+    
+    
+    
+    /*************************************************tags function */
+    
+    $Tags = [];
+    $article_by_Tags = [];
+    
+    $tg = "SELECT id,tagsname FROM tags";
+    
+    $stmt2 = $conn->query($tg);
+    if ($stmt2 && $stmt2->rowCount() > 0) {
+        while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+            $Tags[] = $row;
+            $articles_by_Tags[$row['id']] = [];
+        }
     }
-}
-
-
-if (isset($_POST['createTag'])) {
-    $tagName = $_POST['tagName'];
-    $A = new Admin($conn);
-    $create = $A->createTags($tagName);
-    header('Location: ' . $_SERVER['PHP_SELF']);
-}
-
-if (isset($_POST['removetag'])) {
-    $TagsId = $_POST['tagId'];
-    $A = new Admin($conn);
-    $create = $A->removeTags($TagsId);
-    header('Location: ' . $_SERVER['PHP_SELF']);
-}
-
-
-if (isset($_POST['modifytags'])) {
-    $categoryId = $_POST['tagId'];
-    $newCategoryName = $_POST['newtagName'];
-    $A = new Admin($conn);
-    $modify = $A->modifyTags($newCategoryName, $categoryId);
-    header('Location: ' . $_SERVER['PHP_SELF']);
-}
-
-
-/****************************** catagogty function and article */
-$article_query = "SELECT id, title, catagugry_id, statu FROM article";
-$article_stmt = $conn->query($article_query);
-if ($article_stmt && $article_stmt->rowCount() > 0) {
-    while ($article = $article_stmt->fetch(PDO::FETCH_ASSOC)) {
-        $articles_by_category[$article['catagugry_id']][] = $article; 
+    
+    
+    if (isset($_POST['createTag'])) {
+        $tagName = $_POST['tagName'];
+        $A = new Admin($conn);
+        $create = $A->createTags($tagName);
+        header('Location: ' . $_SERVER['PHP_SELF']);
     }
-}
-
-if (isset($_POST['createCategory'])) {
-    $categoryName = $_POST['categoryName'];
-    $A = new Admin($conn);
-    $create = $A->createCategory($categoryName);
-    header('Location: ' . $_SERVER['PHP_SELF']);
-}
-
-if (isset($_POST['modifyCategory'])) {
-    $categoryId = $_POST['categoryId'];
-    $newCategoryName = $_POST['newCategoryName'];
-    $A = new Admin($conn);
-    $modify = $A->modifyCategory($newCategoryName, $categoryId);
-    header('Location: ' . $_SERVER['PHP_SELF']);
-}
-
-if (isset($_POST['removeCategory'])) {
-    $categoryId = $_POST['categoryId'];
-    $remove = $A->removeCategory($categoryId);
-    header('Location: ' . $_SERVER['PHP_SELF']);
-
-}
-
-if (isset($_POST['acceptArticle'])) {
-    $articleId = $_POST['articleId'];
-    if (!empty($articleId)) {
-        $accept = $A->acceptArticle($articleId);
-
+    
+    if (isset($_POST['removetag'])) {
+        $TagsId = $_POST['tagId'];
+        $A = new Admin($conn);
+        $create = $A->removeTags($TagsId);
+        header('Location: ' . $_SERVER['PHP_SELF']);
     }
+    
+    
+    if (isset($_POST['modifytags'])) {
+        $categoryId = $_POST['tagId'];
+        $newCategoryName = $_POST['newtagName'];
+        $A = new Admin($conn);
+        $modify = $A->modifyTags($newCategoryName, $categoryId);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+    
+    
+    /****************************** catagogty function and article */
+    $article_query = "SELECT id, title, catagugry_id, statu FROM article";
+    $article_stmt = $conn->query($article_query);
+    if ($article_stmt && $article_stmt->rowCount() > 0) {
+        while ($article = $article_stmt->fetch(PDO::FETCH_ASSOC)) {
+            $articles_by_category[$article['catagugry_id']][] = $article; 
+        }
+    }
+    
+    if (isset($_POST['createCategory'])) {
+        $categoryName = $_POST['categoryName'];
+        $A = new Admin($conn);
+        $create = $A->createCategory($categoryName);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+    
+    if (isset($_POST['modifyCategory'])) {
+        $categoryId = $_POST['categoryId'];
+        $newCategoryName = $_POST['newCategoryName'];
+        $A = new Admin($conn);
+        $modify = $A->modifyCategory($newCategoryName, $categoryId);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+    
+    if (isset($_POST['removeCategory'])) {
+        $categoryId = $_POST['categoryId'];
+        $remove = $A->removeCategory($categoryId);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+    
+    }
+    
+    if (isset($_POST['acceptArticle'])) {
+        $articleId = $_POST['articleId'];
+        if (!empty($articleId)) {
+            $accept = $A->acceptArticle($articleId);
+    
+        }
+    }
+    
+    if (isset($_POST['rejectArticle'])) {
+        $articleId = $_POST['articleId'];
+        if (!empty($articleId)) {
+            $reject = $A->rejectArticle($articleId);
+        }
+    }
+
+}else {
+    die("access denied , should be sing up");
 }
 
-if (isset($_POST['rejectArticle'])) {
-    $articleId = $_POST['articleId'];
-    if (!empty($articleId)) {
-        $reject = $A->rejectArticle($articleId);
-    }
-}
+
 ?>
 
 <!DOCTYPE html>
