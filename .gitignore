@@ -1,4 +1,4 @@
 vendor
 composer.json
 composer.lock
-mail.php
+../views/mail.php
