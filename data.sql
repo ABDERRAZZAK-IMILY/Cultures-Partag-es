@@ -79,3 +79,38 @@ SELECT c.name AS category_name
 FROM catagugry c
 LEFT JOIN article a ON c.id = a.catagugry_id
 WHERE a.id IS NULL;
+
+
+CREATE TABLE article_tags (
+    article_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY (article_id) REFERENCES article(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE banuser(IN user_id INT)
+BEGIN
+    UPDATE users
+    SET isactive = 0
+    WHERE id = user_id;
+END$$
+
+DELIMITER $$ ;
+
+
+CREATE VIEW most_liked_articles AS
+SELECT 
+    a.id AS article_id,
+    a.title AS article_title,
+    COUNT(l.id) AS like_count,
+    c.name AS category_name
+FROM article a
+JOIN catagugry c ON a.catagugry_id = c.id
+JOIN likes l ON a.id = l.article_id
+GROUP BY a.id, a.title, c.name
+ORDER BY like_count DESC;

@@ -127,6 +127,13 @@ if (isset($_GET['id'])) {
                     <i class="fas fa-thumbs-up"></i> Add to liked articles
                 </button>
             </form>
+            <form action="pdf.php" method="POST">
+    <input type="hidden" name="article_id" value="<?php echo htmlspecialchars($article['id']); ?>">
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+        <i class="fas fa-file-pdf"></i> Download PDF
+    </button>
+</form>
+
         </article>
 
         <div class="bg-gray-100 p-6">
