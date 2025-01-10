@@ -21,6 +21,8 @@ if (isset($_POST['article_id'])) {
         $mpdf = new \Mpdf\Mpdf();
 
         $html = '
+                    <img alt="Article Image" class="w-full h-auto mb-4 rounded-lg" height="400" src="' . htmlspecialchars($article['image']) . '" width="800"/>
+
         <h1>' . htmlspecialchars($article['title']) . '</h1>
         <h3>Catégorie: ' . htmlspecialchars($article['name']) . '</h3>
         <p><strong>Date de création:</strong> ' . $article['date_creation'] . '</p>
