@@ -2,59 +2,84 @@
 require_once '../model/USER.php';
 require_once '../model/db_connect.php';
 require_once '../model/Visteur.php';
-
-
+require_once '../vendor/autoload.php';
 
 if (isset($_POST['submit'])) {
 
-    require_once '../mail.php';
-
-    $firstName = $_POST['fristname'];
+    $firstName = $_POST['firstname'];
     $lastName = $_POST['lastname'];
     $role = $_POST['role'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-
     $image = $_FILES['image'];
 
-        $c = new DATABASE();
-        $conn = $c->getConnection();
-        $visiteur = new Visteur($conn);
+    $c = new DATABASE();
+    $conn = $c->getConnection();
+    $visiteur = new Visteur($conn);
 
-        if ($visiteur->register($firstName, $lastName, $email, $password, $role , $image)) {
+    if ($visiteur->register($firstName, $lastName, $email, $password, $role, $image)) {
 
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'imily2024@gmail.com';
+            $mail->Password = 'password123';
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
 
-            $mail->setFrom('imily2024@gmail.com', 'abderrazzak imily');
+            $mail->setFrom('imily@gmail.com', 'Aberrazzak imily');
             $mail->addAddress($email);
-            $mail->Subject = "MESSSAGE";
-            $mail->Body    = "WELCOM TO OUR COMMIONTE";
 
-            echo "<script>
-            window.onload = function() {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'you are regestered.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
+            $mail->isHTML(true);
 
-                
+            if ($role === 'visteur') {
+                $mail->Subject = 'Welcome to our community';
+                $mail->Body    = 'Thank you for registering with us. We are happy to have you!';
+            } else {
+                $mail->Subject = 'Welcome to our community';
+                $mail->Body    = 'Thank you for working with us. We are happy to have you!';
             }
-          </script>"; 
+                $mail->send();
 
-        } else {
             echo "<script>
+                window.onload = function() {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'You are registered and a confirmation email has been sent.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+              </script>"; 
+
+        } catch (Exception $e) {
+            echo "<script>
+                window.onload = function() {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Mail could not be sent. Mailer Error: {$mail->ErrorInfo}',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+              </script>";
+        }
+
+    } else {
+        echo "<script>
             window.onload = function() {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'failed to regertred.',
+                    text: 'Failed to register.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
-          </script>";        }
+          </script>";
     }
-    
+}
 ?>
 
 <!DOCTYPE html>
@@ -94,11 +119,11 @@ if (isset($_POST['submit'])) {
             <div class="p-8">
                 <form class="space-y-4" method="POST" id="validation" enctype="multipart/form-data">
                     <div class="relative">
-                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Frist Name"  id="firstName" name="fristname" >
+                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="First Name" id="firstName" name="firstname" required>
                         <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
-                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Last Name" id="lastName" name="lastname" >
+                        <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Last Name" id="lastName" name="lastname" required>
                         <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
@@ -113,7 +138,7 @@ if (isset($_POST['submit'])) {
                         <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
-                        <input type="file" id="image" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="image" name="image" required>
+                        <input type="file" id="image" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" placeholder="Image" name="image" required>
                         <i class="fas fa-image absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div class="relative">
@@ -127,11 +152,9 @@ if (isset($_POST['submit'])) {
     </div>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     const namePattern = /^[a-zA-Z\s]+$/;
-    const emailPattern = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/
+    const emailPattern = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/;
     const passwordPattern = /^(?=.*[a-zA-Z0-9]).{4,}$/;
 
     document.getElementById('validation').addEventListener('submit', function(event) {
@@ -175,5 +198,4 @@ if (isset($_POST['submit'])) {
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>
