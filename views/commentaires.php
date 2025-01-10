@@ -19,8 +19,8 @@ if ($stmt && $stmt->rowCount() > 0) {
     echo "no comment found.";
 }
 
-if (isset($_GET['ban_user_id'])) {
-    $userId = $_GET['ban_user_id'];
+if (isset($_GET['user_id'])) {
+    $userId = $_GET['user_id'];
 
     $deleteQuery = "DELETE  content from  comments WHERE id = :id";
     $deleteStmt = $conn->prepare($deleteQuery);
@@ -30,7 +30,7 @@ if (isset($_GET['ban_user_id'])) {
         window.onload = function() {
             Swal.fire({
                 title: 'Success!',
-                text: 'User has been banned',
+                text: 'comment delete',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
@@ -40,7 +40,7 @@ if (isset($_GET['ban_user_id'])) {
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     } else {
-        echo "Failed to ban user.";
+        echo "failed to ban user.";
     }
 }
 
@@ -72,7 +72,7 @@ if (isset($_GET['ban_user_id'])) {
                 <td class="px-4 py-2 border border-gray-300"><?= htmlspecialchars($commentair['content']) ?></td>
                
                 <td class="px-4 py-2 border border-gray-300">
-                        <a href="?ban_user_id=<?= $commentair['id'] ?>" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                        <a href="?user_id=<?= $commentair['id'] ?>" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
                             remove comment
                         </a>
                 </td>
