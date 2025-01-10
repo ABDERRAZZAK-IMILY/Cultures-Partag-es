@@ -17,6 +17,19 @@ if (isset($_SESSION['user_id'])) {
         $stmt->execute();
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $articlelikes =[];
+
+        $stmt2 = $A->prepare("SELECT * FROM likes join article on likes.article_id = article.id");
+        $stmt2->execute();
+
+        if ($stmt2 && $stmt2->rowCount() > 0) {
+            while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                $articlelikes[] = $row;
+            }
+        }
+        // $articlelikes = $stmt2->fetch((PDO::FETCH_ASSOC));
+ 
+
         if (!$userData) {
             die("Error fetching user data.");
         }
@@ -100,6 +113,74 @@ if (isset($_SESSION['user_id'])) {
                 </form>
             </div>
         </div>
+
+
+
+        <!-- our services section -->
+<section class="py-10" id="services">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">liked article</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <?php  foreach($articlelikes as $articlelike) : ;  ?>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <img class="object-cover w-full h-52" src="<?= htmlspecialchars($articlelike['image']) ?: 'https://source.unsplash.com/200x200/?fashion' ?>" alt="Article Image">
+                <div class="p-6 text-center">
+                <p class="text-sm text-gray-500"><?= date("F j, Y", strtotime($articlelike['date_creation'])) ?></p>
+                <h1     class="text-gray-900 font-semibold text-xl mt-2 mb-3"><?= htmlspecialchars($articlelike['title']) ?></h1>
+                <p class="text-gray-700 text-base"><?= htmlspecialchars($articlelike['description']) ?></p>
+                </div>
+            </div>
+
+                 <?php endforeach;   ?>
+
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1606854428728-5fe3eea23475?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z3JhbSUyMGZsb3VyfGVufDB8fDB8fHww" alt="Coffee"
+                    class="w-full h-64 object-cover">
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-medium text-gray-800 mb-2">Gram Flour Grinding</h3>
+                    <p class="text-gray-700 text-base">Our gram flour is perfect for a variety of uses, including
+                        baking, cooking, and making snacks. It is also a good source of protein and fiber.Our gram flour
+                        grinding service is a convenient and affordable way to get the freshest gram flour possible.</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://image2.jdomni.in/banner/13062021/D2/99/0D/48D7F4AFC48C041DC8D80432E9_1623562146900.png?output-format=webp" alt="Coffee"
+                    class="w-full h-64 object-cover">
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-medium text-gray-800 mb-2">Jowar Flour Grinding</h3>
+                    <p class="text-gray-700 text-base">Our jowar grinding service is a convenient and affordable way to
+                        get fresh, high-quality jowar flour. We use state-of-the-art equipment to grind jowar into a
+                        fine powder, which is perfect for making roti, bread, and other dishes.
+                    <details>
+                        <summary>Read More</summary>
+                        <p>Our jowar flour is also
+                            a good source of protein and fiber, making it a healthy choice for your family.</p>
+                    </details>
+                    </p>
+
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1607672632458-9eb56696346b?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coffee"
+                    class="w-full h-64 object-cover">
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-medium text-gray-800 mb-2">Chilli pounding</h3>
+                    <p class="text-gray-700 text-base">We specializes in the production of high-quality chili powder.
+                        Our chili powder is made from the finest, freshest chilies, and we use traditional pounding
+                        methods to ensure that our chili powder retains its full flavor and aroma.
+                    <details>
+                        <summary>Read More</summary>
+                        <p> We offer a variety of chili powder products, including mild, medium, and hot. We also offer
+                            custom blends to meet the specific needs of our customers.</p>
+                    </details>
+                    </p>
+                </div>
+            </div>
+                </article>
+            </div>
     </div>
+
 </body>
 </html>

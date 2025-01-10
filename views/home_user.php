@@ -8,11 +8,12 @@ $conn = (new DATABASE())->getConnection();
 $articles = [];
 $category_filter = isset($_GET['category']) ? $_GET['category'] : '';
 $keyword_filter = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+$author_filter = isset($_GET['author']) ? $_GET['author'] : '';
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 3;
 $offset = ($page - 1) * $limit;
 
-$query = "SELECT article.id , description, article.image, date_creation, title, name FROM article 
+$query = "SELECT article.id , description, article.image, date_creation, title, name , users.lastName FROM article 
           JOIN catagugry ON catagugry.id = article.catagugry_id
           JOIN users on users.id = article.user_id
           WHERE statu = 'accepted'";
@@ -23,6 +24,10 @@ if ($category_filter) {
 
 if ($keyword_filter) {
     $query .= " AND (article.title LIKE :keyword OR article.description LIKE :keyword)";
+}
+
+if ($author_filter) {
+    $query .= " AND users.lastName LIKE :author";
 }
 
 $query .= " ORDER BY date_creation DESC LIMIT :limit OFFSET :offset";
@@ -36,7 +41,10 @@ if ($keyword_filter) {
     $keyword_param = "%" . $keyword_filter . "%";
     $stmt->bindParam(':keyword', $keyword_param, PDO::PARAM_STR);
 }
-
+if ($author_filter) {
+    $author_param = "%" . $author_filter . "%";
+    $stmt->bindParam(':author', $author_param, PDO::PARAM_STR);
+}
 
 $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -73,7 +81,9 @@ if ($keyword_filter) {
     $total_query .= " AND (article.title LIKE :keyword OR article.description LIKE :keyword)";
 }
 
-
+if ($author_filter) {
+    $total_query .= " AND users.lastName LIKE :author";
+}
 
 $total_stmt = $conn->prepare($total_query);
 if ($category_filter) {
@@ -82,7 +92,9 @@ if ($category_filter) {
 if ($keyword_filter) {
     $total_stmt->bindParam(':keyword', $keyword_param, PDO::PARAM_STR);
 }
-
+if ($author_filter) {
+    $total_stmt->bindParam(':author', $author_param, PDO::PARAM_STR);
+}
 
 $total_stmt->execute();
 $total_articles = $total_stmt->fetchColumn();
@@ -124,7 +136,10 @@ $total_pages = ceil($total_articles / $limit);
                         <input type="text" name="keyword" id="keyword" value="<?= htmlspecialchars($keyword_filter) ?>" class="ml-4 p-2 border rounded" placeholder="Search articles...">
                     </div>
 
-                 
+                    <!-- <div>
+                        <label for="author" class="text-lg font-medium text-gray-700">Search by Author:</label>
+                        <input type="text" name="author" id="author" value="<?= htmlspecialchars($author_filter) ?>" class="ml-4 p-2 border rounded" placeholder="Search author...">
+                    </div> -->
 
                     <button type="submit" class="ml-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Search</button>
                 </form>
@@ -164,7 +179,10 @@ $total_pages = ceil($total_articles / $limit);
                         <p class="text-gray-700"><?= htmlspecialchars($article['name']) ?></p>
                     </div>
 
-
+                    <div class="absolute top-4 right-43 bg-white bg-opacity-80 py-1 px-3 rounded-md text-xs">
+                        <p class="text-gray-700"><?= htmlspecialchars($article['lastName']) ?></p>
+                    </div>
+                    
                     <div class="bg-white p-6 rounded-lg shadow-lg">
             <h2 class="text-lg font-semibold mb-4">Tag</h2>
             <div class="flex flex-wrap gap-2">
