@@ -27,12 +27,7 @@ $category_filter = isset($_GET['category']) ? $_GET['category'] : '';
 
 
 if (isset($_POST['submit'])){
-
-
-
     $articles = [];
-    
-
     if ($category_filter) { 
         $query = " SELECT description, image, date_creation, title, name FROM article join catagugry on catagugry.id = article.catagugry_id WHERE statu = 'accepted' AND catagugry.name = $category_filter";
         $stmt2 = $conn->query($query);
@@ -82,8 +77,8 @@ if ($stmt && $stmt->rowCount() > 0) {
 
 
 }else {
-    die("access denied , should be sing up");
-}
+    header('Location: 401.php');
+    exit;}
 ?>
 
 <!DOCTYPE html>

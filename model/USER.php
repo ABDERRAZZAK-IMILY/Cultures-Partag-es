@@ -17,6 +17,8 @@ public $password;
 
 public $role;
 
+public $image;
+
 protected $conn;
 
 
@@ -27,10 +29,6 @@ public function __construct($dbConn) {
 
 
 public function login($email, $password) {
-
-
-
-
     $user = $this->getUserByEmail($email);
 
     if ($user && password_verify($password, $user['password'])) {
@@ -50,7 +48,8 @@ public function login($email, $password) {
     return false;
 }
 
-  private function initializeSession($user) {
+
+ public function initializeSession($user) {
     session_start();
 
     $_SESSION['user_id'] = $user['id'];
@@ -62,7 +61,7 @@ public function login($email, $password) {
     if ($user['role'] === 'auteur'){
     header('Location: auteur.php');
     }else if ($user['role'] === 'visteur'){
-        header('Location: user_page.php ');
+        header('Location: home_user.php ');
     }else if ($user['role'] === 'admin'){
         header('Location: admin_dashboard.php');
     }

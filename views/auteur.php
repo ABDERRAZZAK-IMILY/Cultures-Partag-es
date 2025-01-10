@@ -102,7 +102,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
         $message = "no accepted articles found";
     }
 } else {
-    die("access denied , should be sing up");
+    header('Location: 401.php');
+    exit;
 }
 ?>
 

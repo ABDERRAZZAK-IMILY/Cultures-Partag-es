@@ -6,6 +6,7 @@ session_start();
 if (isset($_GET['id'])) {
     $article_id = $_GET['id'];
 
+
     $conn = (new DATABASE())->getConnection();
 
     $query = "SELECT a.id, a.title, a. description, a.image, a.date_creation, c.name
@@ -29,12 +30,34 @@ if (isset($_GET['id'])) {
 
   if(isset($_POST['likedarticle'])){
 
+    $aricleid = $article['id'];
+    $userid = $_SESSION['user_id'];
+    $c = new DATABASE();
+    $conn = $c->getConnection();
 
+  $querylike = "INSERT  INTO likes (user_id , article_id) values ( $userid , $aricleid)";
 
+  $ex = $conn->prepare($querylike);
 
+  if ($ex->execute()){
+
+  echo "<script>
+            window.onload = function() {
+                Swal.fire({
+                    title: 'like!',
+                    text: 'artilce liked in your profile!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            }
+            </script>";
+  }else {
+    echo 'errore';
   }
+ }
 
 if(isset($_POST['comment_submit'])){
+
 
 
 
@@ -62,8 +85,9 @@ if(isset($_POST['comment_submit'])){
   <title>
    Détail de l'article
   </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
+  <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
  </head>

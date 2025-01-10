@@ -109,7 +109,8 @@ if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'){
     }
 
 }else {
-    die("access denied , should be sing up");
+    header('Location: 401.php');
+    exit;
 }
 
 

@@ -26,7 +26,7 @@
 <body>
 
 <h1>401 Unauthorized</h1>
-<p>Your account has been banned.</p>
+<p>You dont have acesst.</p>
 
 </body>
 </html>
