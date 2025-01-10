@@ -133,13 +133,9 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'auteur') {
                 <div class="px-6 py-3">
                     <p class="text-xs uppercase text-purple-300">Menu Principal</p>
                 </div>
-                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
-                    <i class="fas fa-pencil-alt mr-3"></i>
-                    Mes Articles
-                </a>
-                <a href="#" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
+                <a href="../views/visteur_profile.php" class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
                     <i class="fas fa-plus-circle mr-3"></i>
-                    Nouvel Article
+                    PROFILE
                 </a>
                 <a href="logout.php"
                     class="flex items-center px-6 py-3 hover:bg-red-700 transition-colors duration-200">
