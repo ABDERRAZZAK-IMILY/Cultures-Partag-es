@@ -7,7 +7,7 @@ require_once '../model/Visteur.php';
 
 if (isset($_POST['submit'])) {
 
-    require_once '../views/mail.php';
+    require_once '../mail.php';
 
     $firstName = $_POST['fristname'];
     $lastName = $_POST['lastname'];

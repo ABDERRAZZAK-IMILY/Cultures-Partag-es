@@ -29,7 +29,9 @@ $category_filter = isset($_GET['category']) ? $_GET['category'] : '';
 if (isset($_POST['submit'])){
 
 
+
     $articles = [];
+    
 
     if ($category_filter) { 
         $query = " SELECT description, image, date_creation, title, name FROM article join catagugry on catagugry.id = article.catagugry_id WHERE statu = 'accepted' AND catagugry.name = $category_filter";
@@ -143,7 +145,7 @@ if ($stmt && $stmt->rowCount() > 0) {
 
 
                     <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-lg font-semibold mb-4">Tags</h2>
+            <h2 class="text-lg font-semibold mb-4">Tag</h2>
             <div class="flex flex-wrap gap-2">
                 <!-- Display Tags -->
                 <div id="selectedTagsContainer" class="mt-2">
